@@ -3,11 +3,11 @@ package camp.model;
 public class Score {
     private int subjectId; // 과목 고유 번호
     private int studentId; // 수강생 고유 번호
-    private int round; // 회차
-    private int score; // 점수
-    private String grade; // 등급
+    private int[] round; // 회차
+    private int[] score; // 점수
+    private String[] grade; // 등급
 
-    public Score(int subjectId, int studentId, int round, int score) {
+    public Score(int subjectId, int studentId, int[] round, int[] score) {
         this.subjectId = subjectId;
         this.studentId = studentId;
         this.round = round;
@@ -22,15 +22,15 @@ public class Score {
         return studentId;
     }
 
-    public int getRound() {
+    public int[] getRound() {
         return round;
     }
 
-    public int getScore() {
+    public int[] getScore() {
         return score;
     }
 
-    public String getGrade() {
+    public String[] getGrade() {
         return grade;
     }
 }
