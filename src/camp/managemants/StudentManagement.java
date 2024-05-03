@@ -7,14 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class StudentManagement {
+public class StudentManagement extends Management {
 
     // 데이터 저장소
     private static List<Student> studentList = new ArrayList<>();
     private static List<Subject> subjectList;
-
-    // 스캐너
-    private static Scanner sc = new Scanner(System.in);
 
     //getter
     public List<Student> getStudentList() {
@@ -35,7 +32,7 @@ public class StudentManagement {
             switch (input) {
                 case 1 -> addStudentInfo(); // 수강생 등록
                 case 2 -> inquiryStudentInfo(); // 수강생 목록 조회
-                case 3 -> isEnded = backToMain(); // 메인화면 이동
+                case 3 -> isEnded = goBack(); // 메인화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
@@ -71,10 +68,5 @@ public class StudentManagement {
              */
         }
         System.out.println("수강생 관리 화면으로 돌아갑니다.");
-    }
-
-    // 메인화면 이동
-    private boolean backToMain() {
-        return true;
     }
 }

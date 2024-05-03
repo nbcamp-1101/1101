@@ -7,15 +7,12 @@ import camp.model.Subject;
 import java.util.List;
 import java.util.Scanner;
 
-public class ScoreManagement {
+public class ScoreManagement extends Management {
 
     // 데이터 저장소
     private static List<Score> scoreList;
     private static List<Student> studentList;
     private static List<Subject> subjectList;
-
-    // 스캐너
-    private static Scanner sc = new Scanner(System.in);
 
     // getter
     public static List<Score> getScoreList() {
@@ -38,7 +35,7 @@ public class ScoreManagement {
                 case 1 -> addScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> isEnded = backToMain(); // 메인 화면 이동
+                case 4 -> isEnded = goBack(); // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
@@ -101,10 +98,5 @@ public class ScoreManagement {
         System.out.println("등급 조회 성공");
         System.out.println("점수 관리 화면으로 돌아갑니다.");
 
-    }
-
-    // 메인화면 이동
-    private boolean backToMain() {
-        return true;
     }
 }
