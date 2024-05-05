@@ -50,19 +50,15 @@ public class StudentManagement extends Management {
     private void addStudentInfo() {
         boolean isEnded = false;
         while (!isEnded) {
-            // 여기에 저장을 subjectList 에 있는 저장된 그 곳의 주소값을 모은 배열로 저장을 해야함 ?
-
-            List<Subject> subjects = new ArrayList<>(); // 저장해야할 수강생의 과목 목록 데이터
-//            List<Student> subjects = subjectList;
-            System.out.println("수강생 등록 실행 중...");
+            List<Subject> subjects; // 저장해야할 수강생의 과목 목록 데이터
             String studentName;
             String[] selectMandatory;
             String[] selectChoice;
 
+            System.out.println("수강생 등록 실행 중...");
             try {
                 studentName = inputStudentName();
             } catch (Exception e) {
-                System.out.println("입력이 잘못되었습니다. 다시 입력해주세요.");
                 System.out.println(e.getMessage());
                 continue;
             }
@@ -112,14 +108,14 @@ public class StudentManagement extends Management {
     }
 
     // 수강생 이름 입력 확인
-    private String inputStudentName(){
+    private String inputStudentName() throws Exception {
         System.out.println("등록할 수강생 이름을 입력하세요.");
         String studentName = sc.next();
-        System.out.println("입력값 : ["+ studentName + "] 이름 입력이 잘못되었다면 no를 입력해주세요.");
+        System.out.println("입력값 : ["+ studentName + "] \n이름을 잘못 입력하셨다면 no를 입력해주세요.");
         String noCheck = sc.next();
         // 입력체크
         if ("no".equalsIgnoreCase(noCheck)) {
-            return inputStudentName();
+            throw new Exception("\n다시 입력해 주세요\n");
         } else {
             return studentName;
         }
@@ -140,7 +136,7 @@ public class StudentManagement extends Management {
     }
 
     // 필수과목 중복체크와 오름차순정렬
-    private String[] checkSelectMandatory(){
+    private String[] checkSelectMandatory() throws Exception {
 
         viewMandatorySubject(); // 필수과목 조회 메서드
 
@@ -161,7 +157,7 @@ public class StudentManagement extends Management {
     }
 
     // 필수과목에 맞는 값인지 확인후 맞는 과목의 id만 남김
-    private String[] conditionCheckMandatory(String[] checkSubject){
+    private String[] conditionCheckMandatory(String[] checkSubject)throws Exception{
         // 입력한 번호가 신청한 필수과목의 id 값과 같은 값만을 저장
         // 진짜 코드 가독성 똥이다..
         Stream<String> checkSub = Arrays.stream(checkSubject)
@@ -177,13 +173,12 @@ public class StudentManagement extends Management {
 //            System.out.println("신청한 필수 과목 : " + Arrays.toString(checkedSubject)); // test 코드
             return checkedSubject;
         } else {
-            System.out.println("\n신청한 필수과목이 3과목 미만입니다. 재입력해주세요.\n");
-            return checkSelectMandatory();
+            throw new Exception("\n신청한 필수과목이 3과목 미만입니다.\n");
         }
     }
 
     // 선택과목 중복체크와 오름차순정렬
-    private String[] checkSelectChoice(){
+    private String[] checkSelectChoice() throws Exception {
 
         viewChoiceSubject(); // 선택과목 조회 메서드
 
@@ -204,7 +199,7 @@ public class StudentManagement extends Management {
     }
 
     // 선택과목에 맞는 값인지 확인후 맞는 과목의 id만 남김
-    private String[] conditionCheckChoice(String[] checkSubject){
+    private String[] conditionCheckChoice(String[] checkSubject) throws Exception{
         // 입력한 번호가 신청한 선택과목의 id 값과 같은 값만을 저장
         Stream<String> checkSub = Arrays.stream(checkSubject)
                 .filter(input -> subjectList.stream()
@@ -219,12 +214,11 @@ public class StudentManagement extends Management {
 //            System.out.println("신청한 선택 과목 : " + Arrays.toString(checkedSubject)); // test 코드
             return checkedSubject;
         } else {
-            System.out.println("\n신청한 선택과목이 2과목 미만입니다. 재입력해주세요.\n");
-            return checkSelectChoice();
+            throw new Exception("\n신청한 선택과목이 2과목 미만입니다.\n");
         }
     }
 
-    private List<Subject> finalCheckStudentInfo(String studentName, String[] selectMandatory, String[] selectChoice){
+    private List<Subject> finalCheckStudentInfo(String studentName, String[] selectMandatory, String[] selectChoice) throws Exception{
         System.out.println("이름 : " + studentName);
 
         // 두개의 문자열 배열을 하나로 합침
@@ -262,13 +256,13 @@ public class StudentManagement extends Management {
                     + ", 선택한 과목 이름: [ " + subjectName + " ]");
         }
 
-        System.out.println("선택된 정보가 맞다면 yes, 틀리다면 no 를 입력하세요");
+        System.out.println("\n선택된 정보가 맞다면 yes, 틀리다면 no 를 입력하세요");
         String finalCheckMsg = sc.next();
         if ("yes".equalsIgnoreCase(finalCheckMsg)) {
             return selectedSubjects;
         } else {
-            addStudentInfo();
-        }return new ArrayList<>();// 잘못되면 초기화
+            throw new Exception("처음부터 다시 입력해주세요.");
+        }
     }
 
 
