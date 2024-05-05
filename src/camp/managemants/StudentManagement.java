@@ -2,10 +2,7 @@ package camp.managemants;
 
 import camp.model.Student;
 import camp.model.Subject;
-
-import java.sql.SQLOutput;
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StudentManagement extends Management {
@@ -176,7 +173,7 @@ public class StudentManagement extends Management {
                         .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
                                 && Objects.equals(Integer.parseInt(input), subject.getSubjectId())));
 
-        // String 타입을 String[] 로 변환하여 리턴
+        // String 타입을 String[] 로 변환
         String[] checkedSubject = checkSub.toArray(String[]::new);
 
         // 과목 조건 확인
@@ -197,6 +194,7 @@ public class StudentManagement extends Management {
         }
     }
 
+    // 사용자가 최종 체크를 하는 메서드
     private List<Subject> finalCheckStudentInfo(String studentName, String[] selectMandatory, String[] selectChoice) throws Exception{
         System.out.println("이름 : " + studentName);
 
@@ -222,7 +220,7 @@ public class StudentManagement extends Management {
             if (selectedSubject != null) {
                 selectedSubjects.add(selectedSubject);
             } else {
-                throw new Exception("과목입력이 잘못되었습니다. 처음부터 다시 입력해주세요.");
+                throw new Exception("입력이 잘못되었습니다. 처음부터 다시 입력해주세요.");
             }
         }
 
