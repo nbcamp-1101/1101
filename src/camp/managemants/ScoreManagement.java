@@ -49,6 +49,9 @@ public class ScoreManagement extends Management {
         this.subjectList = subjectList;
     }
 
+    /**
+     * 테스트 하려고 만든 코드(원지연)
+     */
     public void testInitStudents() {
         List<Student> students = new ArrayList<>();
         List<Subject> subjects1 = new ArrayList<>();
@@ -258,6 +261,10 @@ public class ScoreManagement extends Management {
         }
     }
 
+    /**
+     * subjectId 로 필수인지 선택이지 확인하고
+     * 점수를 등급으로 변환
+     */
     private String scoreToGrade(String subjectId, String score) throws Exception {
         String grade;
         int tempSubjectId = Integer.parseInt(subjectId) - 1;

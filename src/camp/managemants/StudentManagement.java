@@ -19,6 +19,9 @@ public class StudentManagement extends Management {
         return studentList;
     }
 
+    /**
+     * 테스트 하려고 만든 코드(원지연)
+     */
     public void setStudentList(List<Student> studentList) {
         StudentManagement.studentList = studentList;
     }
