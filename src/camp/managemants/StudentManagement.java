@@ -92,8 +92,8 @@ public class StudentManagement extends Management {
 
             // 모델 리스트에 저장
             studentList.add(student);
-            System.out.println("수강생 등록이 완료되었습니다.");
-            System.out.println("수강생 관리 화면으로 돌아갑니다.");
+            System.out.println("\n수강생 등록이 완료되었습니다.\n");
+            System.out.println("수강생 관리 화면으로 돌아갑니다.\n");
             isEnded = true;
         }
     }
@@ -144,25 +144,37 @@ public class StudentManagement extends Management {
     private String[] checkSelectSubject(String type) throws Exception {
 
         // 조회 메서드
-        viewSubject(type);
-        String selectSubject = sc.next();
+        boolean isEnded = false;
+        String[] str;
+        String[] duplicationCheckedStr = new String[0];
+        while (!isEnded) {
+            try {
+                viewSubject(type);
+                System.out.print("\n입력 : ");
+                String selectSubject = sc.next();
 
-        //구분선 뺴고 저장
-        String[] str = selectSubject.split(",");
+                //구분선 뺴고 저장
+                str = selectSubject.split(",");
+                isEnded = true;
 
-        // 입력된값이 숫자인지 확인
-        for (String s : str) {
-            isNumber(s);
+                // set 으로 변환했다 돌아옴으로써 중복 제거
+                LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
+                duplicationCheckedStr = linkedHashSet.toArray(new String[0]);
+
+                // 오름차순 정렬
+                Arrays.sort(duplicationCheckedStr);
+
+                // 입력된값이 숫자인지 확인
+                for (String s : duplicationCheckedStr) {
+                    isNumber(s);
+                }
+                return conditionCheck(type, duplicationCheckedStr);
+            } catch (Exception e){
+                throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
+                        + "\n처음으로 돌아갑니다.\n");
+            }
         }
-
-        // set 으로 변환했다 돌아옴으로써 중복 제거
-        LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
-        String[] duplicationCheckedStr = linkedHashSet.toArray(new String[0]);
-
-        // 오름차순 정렬
-        Arrays.sort(duplicationCheckedStr);
-
-        return conditionCheck(type, duplicationCheckedStr);
+        return duplicationCheckedStr;
     }
 
     // 선택한 과목과 과목목록을 비교 확인후 목록에 있는 id 값만 남김
@@ -181,13 +193,17 @@ public class StudentManagement extends Management {
             if (checkedSubject.length > 2) {
                 return checkedSubject;
             } else {
-                throw new Exception("\n신청한 필수과목이 3과목 미만입니다. 처음부터 다시 입력해주세요.\n");
+                throw new Exception("\n입력값이 필수과목 조건에 맞지 않습니다." +
+                        "\n과목번호를 확인후 다시 입력해주세요. " +
+                        "\n처음으로 돌아갑니다.\n");
             }
         } else if (type.equals(SUBJECT_TYPE_CHOICE)) {
             if (checkedSubject.length > 1) {
                 return checkedSubject;
             } else {
-                throw new Exception("\n신청한 선택과목이 2과목 미만입니다.\n");
+                throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +
+                        "\n과목번호를 확인후 다시 입력해주세요. " +
+                        "\n처음으로 돌아갑니다.\n");
             }
         } else {
             throw new Exception("\n입력값이 잘못 되었습니다. 처음으로 돌아갑니다.\n");
@@ -236,13 +252,14 @@ public class StudentManagement extends Management {
         }
 
         boolean isEnded = false;
+        System.out.println("\n선택된 정보가 맞습니까? Y/N");
         while (!isEnded) {
-            System.out.println("\n선택된 정보가 맞습니까? Y/N");
             String finalCheckMsg = sc.next();
             if ("y".equalsIgnoreCase(finalCheckMsg)) {
                 return selectedSubjects;
             } else if ("n".equalsIgnoreCase(finalCheckMsg)) {
-                throw new Exception("처음부터 다시 입력해주세요.");
+                throw new Exception("처음으로 돌아갑니다." +
+                        "\n처음부터 다시 입력해주세요.");
             } else {
                 System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");
             }
