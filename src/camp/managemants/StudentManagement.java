@@ -26,11 +26,11 @@ public class StudentManagement extends Management {
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요.\n");
-            int input = sc.nextInt();
+            String input = sc.next();
             switch (input) {
-                case 1 -> addStudentInfo(); // 수강생 등록
-                case 2 -> inquiryStudentInfo(); // 수강생 목록 조회
-                case 3 -> isEnded = goBack(); // 메인화면 이동
+                case "1" -> addStudentInfo(); // 수강생 등록
+                case "2" -> inquiryStudentInfo(); // 수강생 목록 조회
+                case "3" -> isEnded = goBack(); // 메인화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
@@ -108,19 +108,51 @@ public class StudentManagement extends Management {
     }
 
 
-    private String conditionCheck(String[] checkSubject){
-        // 조건이 3개 이상인지 , 맞는 과목 번호인지 확인해야함
-        if (checkSubject.length >= 3) {
-            // 배열의 개수가 3개 이상인 배열들만 들어옴
-            // 여기서 번호를 직접 비교해서 유효성을 확인해야함
-            // subjectList 이곳에서 SUBJECT_TYPE_MANDATORY 여기에 해당하는 index 값만 가져온뒤
-            // 그 값들과 같은 값들만 새로운 배열에 넣어주는 식으로 추가
-            // 필수, 선택 각각 진행한다음 두 배열을 합치고 할당
-            // 그럼 끝
+//    private String conditionCheck(String[] checkSubject){
+//        // 조건이 3개 이상인지 , 맞는 과목 번호인지 확인해야함
+//        if (checkSubject.length >= 3) {
+//            // 배열의 개수가 3개 이상인 배열들만 들어옴
+//            // 여기서 번호를 직접 비교해서 유효성을 확인해야함
+//            // subjectList 이곳에서 SUBJECT_TYPE_MANDATORY 여기에 해당하는 index 값만 가져온뒤
+//            // 그 값들과 같은 값들만 새로운 배열에 넣어주는 식으로 추가
+//            // 필수, 선택 각각 진행한다음 두 배열을 합치고 할당
+//            // 그럼 끝
+//
+//        } else {
+//            addStudentInfo(); // 조건 3개가 안되면 등록 재시작 수정필요!!!!!!!
+//        }
+//        return checkedSubject;
+//    }
 
-        } else {
-            addStudentInfo(); // 조건 3개가 안되면 등록 재시작 수정필요!!!!!!!
+    /**
+     * 수강생의 과목 목록 출력(수강생이 존재하지 않으면 예외처리)
+     */
+    public void findSubjectByStudent(String studentId) throws Exception {
+        if (studentList.isEmpty()) {
+            throw new Exception("존재하지 않는 수강생입니다.");
         }
-        return checkedSubject;
+        Student student = studentList.stream().filter(f->studentId.equals(String.valueOf(f.getStudentId()))).findFirst().orElse(null);
+        if (student == null) {
+            throw new Exception("존재하지 않는 수강생입니다.");
+        }
+        //과목 목록 출력
+        for (Subject subject : student.getSubjects()) {
+            System.out.print(subject.getSubjectId()+". ");
+            System.out.print(subject.getSubjectName()+", ");
+        }
+    }
+
+    /**
+     * 수강하는 과목이 아니면 예외처리
+     */
+    public void isNotTakeASubject(String studentId, String subjectId) throws Exception {
+        Student student = studentList.stream().filter(f->studentId.equals(String.valueOf(f.getStudentId()))).findFirst().orElse(null);
+        if (student == null) {
+            throw new Exception("존재하지 않는 수강생입니다.");
+        }
+        Subject subject = student.getSubjects().stream().filter(f->subjectId.equals(String.valueOf(f.getSubjectId()))).findFirst().orElse(null);
+        if (subject == null) {
+            throw new Exception("해당 학생이 수강하는 과목이 아닙니다.");
+        }
     }
 }
