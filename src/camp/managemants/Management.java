@@ -48,4 +48,17 @@ public class Management {
             throw new Exception("숫자를 입력해주세요. 처음으로 돌아갑니다.");
         }
     }
+
+    // 회차, 점수 범위 벗어나는지 판단
+    public void isValid(String num, String type) throws Exception {
+        if ("round".equals(type)) {
+            if (Integer.parseInt(num) <= 0 || Integer.parseInt(num) > 10) {
+                throw new Exception("1이상 10이하의 숫자를 입력해주세요.");
+            }
+        }else if ("score".equals(type)) {
+            if (Integer.parseInt(num) < 0 || Integer.parseInt(num) > 100) {
+                throw new Exception("0이상 100이하의 숫자를 입력해주세요.");
+            }
+        }
+    }
 }

@@ -4,10 +4,7 @@ import camp.model.Score;
 import camp.model.Student;
 import camp.model.Subject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ScoreManagement extends Management {
 
@@ -100,12 +97,9 @@ public class ScoreManagement extends Management {
             }
 
             // 과목의 전 회차 점수 출력
-            Score scoreObj;
+            List<Score> scores;
             try {
-                scoreObj = inquireScoreBySubject(studentId, subjectId);
-                for (int i=0; i<scoreObj.getScore().length; i++) {
-                    System.out.print(i+1 + "회차 : " + scoreObj.getScore()[i] + ", ");
-                }
+                scores = inquireRoundScoreBySubject(studentId, subjectId);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
@@ -126,7 +120,7 @@ public class ScoreManagement extends Management {
             // 점수 입력
             String score;
             try {
-                System.out.println("시험 점수를 수정해주세요");
+                System.out.println("수정할 점수를 입력해주세요. (0~100)");
                 score = sc.nextLine();
                 isNumber(score);
                 isValid(score, "score");
@@ -136,7 +130,12 @@ public class ScoreManagement extends Management {
             }
 
             // 수정
-            isEnded = scoreObj.updateScoreBySubject(round, score);
+            try {
+                isEnded = updateProc(scores, round, score);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
         }
     }
 
@@ -186,37 +185,64 @@ public class ScoreManagement extends Management {
         return subjectId;
     }
 
-    // 수강생의 특정 과목 점수 객체 반환
-    private Score inquireScoreBySubject(String studentId, String subjectId) throws Exception {
+    // 수강생의 특정 과목 점수 출력 및 점수 리스트 반환
+    private List<Score> inquireRoundScoreBySubject(String studentId, String subjectId) throws Exception {
         if (scoreList.isEmpty()) {
             throw new Exception("등록된 점수가 존재하지 않습니다.");
         }
 
-        Score score = scoreList.stream().filter(n->{
+        List<Score> scores = scoreList.stream().filter(n->{
             if (studentId.equals(String.valueOf(n.getStudentId()))
                     && subjectId.equals(String.valueOf(n.getSubjectId()))) {
                 return true;
             }else {
                 return false;
             }
-        }).findFirst().orElse(null);
+        }).sorted(Comparator.comparing(Score::getRound)).toList();
 
-        if (score==null) {
+        if (scores.isEmpty()) {
             throw new Exception("등록된 점수가 존재하지 않습니다.");
         }
-        return score;
+
+        for (Score score : scores) {
+            System.out.print(score.getRound()+"회차 : " + score.getScore() + ", ");
+        }
+
+        return scores;
     }
 
-    // 회차, 점수 범위 벗어나는지 판단
-    private void isValid(String num, String type) throws Exception {
-        if (!"round".equals(type)) {
-            if (Integer.parseInt(num) <= 0 || Integer.parseInt(num) > 10) {
-                throw new Exception("1이상 10이하의 숫자를 입력해주세요.");
+    // 점수 수정
+    private boolean updateScore(List<Score> scores, String round, String score) throws Exception {
+        Score scoreObj = scores.stream().filter(f->{
+            if (round.equals(String.valueOf(f.getRound()))) {
+                return true;
+            }else {
+                return false;
             }
-        }else if (!"score".equals(type)) {
-            if (Integer.parseInt(num) < 0 || Integer.parseInt(num) > 100) {
-                throw new Exception("0이상 100이하의 숫자를 입력해주세요.");
+        }).findFirst().orElse(null);
+        if (scoreObj != null) {
+            scoreObj.setScore(Integer.parseInt(score));
+        }else {
+            throw new Exception("해당 회차에 등록된 점수가 없습니다.");
+        }
+        return true;
+    }
+
+    // 수정 여부 답변에 따라 수정 진행
+    private boolean updateProc(List<Score> scores, String round, String score) throws Exception {
+        boolean isEnded = false;
+        String answer;
+        while (!isEnded) {
+            System.out.println("수정하시겠습니까? (Y/N)");
+            answer = sc.next();
+            if ("Y".equalsIgnoreCase(answer)) {
+                isEnded = updateScore(scores, round, score);
+            }else if ("N".equalsIgnoreCase(answer)) {
+                isEnded = true;
+            }else {
+                System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");;
             }
         }
+        return isEnded;
     }
 }
