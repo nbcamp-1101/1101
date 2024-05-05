@@ -80,10 +80,10 @@ public class ScoreManagement extends Management {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private void addScore() {
-        if (testInit) {
-            testInitStudents(); // 테스트로 추가한 것
-            testInit = false;
-        }
+//        if (testInit) {
+//            testInitStudents(); // 테스트로 추가한 것
+//            testInit = false;
+//        }
         if (studentManagement.getStudentList().isEmpty()) {
             System.out.println("수강생이 없습니다. 수강생을 등록해 주세요.");
             return;
@@ -100,7 +100,7 @@ public class ScoreManagement extends Management {
             // 수강생 번호 입력
             String studentId;
             try {
-                 studentId = getStudentId();
+                studentId = getStudentId();
                 sc.nextLine();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -139,8 +139,9 @@ public class ScoreManagement extends Management {
             // 회차 입력
             String round;
             try {
-                System.out.println("회차를 입력해주세요.");
-                round = sc.nextLine();
+                System.out.println("\n회차를 입력해주세요.");
+                round = sc.next();
+                isValid(round, "round");
                 if (takeExam[Integer.parseInt(round) - 1]) {
                     System.out.println("이미 저장된 회차입니다.");
                     break;
@@ -162,7 +163,7 @@ public class ScoreManagement extends Management {
             String score;
             try {
                 System.out.println("시험 점수를 입력해주세요.");
-                score = sc.nextLine();
+                score = sc.next();
                 isNumber(score);
                 isValid(score, "score");
             }catch (Exception e) {
