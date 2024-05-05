@@ -23,11 +23,11 @@ public class MainManagement extends Management {
             System.out.println("2. 점수 관리");
             System.out.println("3. 프로그램 종료");
             System.out.print("관리 항목을 선택하세요.\n");
-            int input = sc.nextInt();
+            String input = sc.next();
             switch (input) {
-                case 1 -> studentManagement.displayStudent(subjectList); // 수강생 관리
-                case 2 -> scoreManagement.displayScore(studentManagement.getStudentList(), subjectList); // 점수 관리
-                case 3 -> isEnded = goBack(); // 프로그램 종료
+                case "1" -> studentManagement.displayStudent(subjectList); // 수강생 관리
+                case "2" -> scoreManagement.displayScore(studentManagement, subjectList); // 점수 관리
+                case "3" -> isEnded = goBack(); // 프로그램 종료
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }

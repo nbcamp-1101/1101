@@ -1,6 +1,7 @@
 package camp.managemants;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Management {
     //과목 타입(필수,선택)
@@ -36,7 +37,15 @@ public class Management {
         }
     }
 
+    // 뒤로 이동
     public boolean goBack() {
         return true;
+    }
+
+    // 숫자인지 판단
+    public void isNumber(String number) throws Exception {
+        if (!Pattern.matches("^[0-9]*$", number)) {
+            throw new Exception("숫자를 입력해주세요. 처음으로 돌아갑니다.");
+        }
     }
 }
