@@ -51,7 +51,7 @@ public class Management {
 
     public void isText(String text) throws Exception {
         if (!Pattern.matches("^[가-힣a-zA-Z]+$", text)) {
-            throw new Exception("\n한글이나 영어로 된 제대로된 이름을 입력해주세요. 처음으로 돌아갑니다.\n");
+            throw new Exception("\n한글이나 영어로 제대로된 이름을 입력해주세요. 처음으로 돌아갑니다.\n");
         }
     }
 

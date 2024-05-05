@@ -240,7 +240,7 @@ public class ScoreManagement extends Management {
             }else if ("N".equalsIgnoreCase(answer)) {
                 isEnded = true;
             }else {
-                System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");;
+                System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");
             }
         }
         return isEnded;

@@ -115,40 +115,46 @@ public class StudentManagement extends Management {
         // 한글이나 영어 체크
         isText(studentName);
 
-        System.out.println("입력값 : ["+ studentName + "] \n이름을 잘못 입력하셨다면 no를 입력해주세요.");
-        String noCheck = sc.next();
-        // 입력체크
-        if ("no".equalsIgnoreCase(noCheck)) {
-            throw new Exception("\n처음부터 다시 입력해주세요.\n");
-        } else {
-            return studentName;
-        }
+        // 이름 체크
+        boolean isEnded = false;
+        while (!isEnded) {
+            System.out.println("이름 : ["+ studentName + "] ");
+            System.out.println("이름을 잘 입력하셨습니까? Y/N");
+            String noCheck = sc.next();
+            if ("n".equalsIgnoreCase(noCheck)){
+                throw new Exception("\n처음부터 다시 입력해주세요.\n");
+            } else if ("y".equalsIgnoreCase(noCheck)){
+                return studentName;
+            } else {
+                System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");
+            }
+        }return studentName;
     }
 
-    //필수과목 목록 조회
-    private void viewMandatorySubject(){
+    // 목록 조회 메서드
+    private void viewSubject(String type){
         subjectList.stream()
-                .filter(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY))
+                .filter(subject -> subject.getSubjectType().equals(type))
                 .forEach(subject -> System.out.println("["+ subject.getSubjectId() + "번] " + subject.getSubjectName()));
     }
 
-    // 선택과목 목록 조회
-    private void viewChoiceSubject(){
-        subjectList.stream()
-                .filter(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE))
-                .forEach(subject -> System.out.println("["+ subject.getSubjectId() + "번] " + subject.getSubjectName()));
-    }
 
     // 필수과목 중복체크와 오름차순정렬
     private String[] checkSelectMandatory() throws Exception {
 
-        viewMandatorySubject(); // 필수과목 조회 메서드
+        viewSubject(SUBJECT_TYPE_MANDATORY); // 필수과목 조회 메서드
 
         System.out.println("\n수강청한 필수과목 번호를 전부 입력하세요 (3개 이상 ex. 1,2,3)");
         String selectMandatory = sc.next();
 
+
         //구분선 뺴고 저장
         String[] str = selectMandatory.split(",");
+
+        // 입력된값이 숫자인지 확인
+        for (String s : str) {
+            isNumber(s);
+        }
 
         // set 으로 변환했다 돌아옴으로써 중복 제거
         LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
@@ -174,17 +180,16 @@ public class StudentManagement extends Management {
 
         // 필수 과목 조건 확인
         if (checkedSubject.length > 2) {
-//            System.out.println("신청한 필수 과목 : " + Arrays.toString(checkedSubject)); // test 코드
             return checkedSubject;
         } else {
-            throw new Exception("\n신청한 필수과목이 3과목 미만입니다.\n");
+            throw new Exception("\n신청한 필수과목이 3과목 미만입니다. 처음부터 다시 입력해주세요.\n");
         }
     }
 
     // 선택과목 중복체크와 오름차순정렬
     private String[] checkSelectChoice() throws Exception {
 
-        viewChoiceSubject(); // 선택과목 조회 메서드
+        viewSubject(SUBJECT_TYPE_CHOICE); // 선택과목 조회 메서드
 
         System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7,8)");
         String selectChoice = sc.next();
