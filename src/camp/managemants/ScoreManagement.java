@@ -335,8 +335,8 @@ public class ScoreManagement extends Management {
 
     // 과목 번호 입력
     private String getSubjectId(String studentId) throws Exception {
-        System.out.println("과목 번호를 입력해주세요.");
-        String subjectId = sc.nextLine();
+        System.out.println("\n과목 번호를 입력해주세요.");
+        String subjectId = sc.next();
         isNumber(subjectId);
         //수강하는 과목이 아니면 예외처리
         studentManagement.isNotTakeASubject(studentId, subjectId);
