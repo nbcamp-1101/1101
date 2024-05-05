@@ -15,6 +15,13 @@ public class Score {
         this.round = round;
         this.score = score;
     }
+    public Score(int subjectId, int studentId, int round, int score, String grade) {
+        this.subjectId = subjectId;
+        this.studentId = studentId;
+        this.round = round;
+        this.score = score;
+        this.grade = grade;
+    }
 
     public int getSubjectId() {
         return subjectId;
@@ -38,5 +45,37 @@ public class Score {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+//    public boolean updateScoreBySubject(String round, String score) {
+//        boolean isEnded = false;
+//        Scanner sc = new Scanner(System.in);
+//        while (!isEnded) {
+//            System.out.println("수정하시겠습니까? (Y/N)");
+//            String question = sc.nextLine();
+//            if ("Y".equalsIgnoreCase(question)) {
+//                // 점수 수정
+//                this.score[Integer.parseInt(round) -1] = Integer.parseInt(score);
+//                System.out.println("점수 수정 성공");
+//                System.out.println("점수 관리 화면으로 돌아갑니다.");
+//                isEnded = true;
+//            }else if ("N".equalsIgnoreCase(question)) {
+//                isEnded = true;
+//            }else {
+//                continue;
+//            }
+//        }
+//        return isEnded;
+//    }
+
+    @Override
+    public String toString() {
+        return "Score{" +
+                "subjectId=" + subjectId +
+                ", studentId=" + studentId +
+                ", round=" + round +
+                ", score=" + score +
+                ", grade='" + grade + '\'' +
+                '}';
     }
 }
