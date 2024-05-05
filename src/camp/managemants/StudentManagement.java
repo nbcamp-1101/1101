@@ -111,11 +111,15 @@ public class StudentManagement extends Management {
     private String inputStudentName() throws Exception {
         System.out.println("등록할 수강생 이름을 입력하세요.");
         String studentName = sc.next();
+
+        // 한글이나 영어 체크
+        isText(studentName);
+
         System.out.println("입력값 : ["+ studentName + "] \n이름을 잘못 입력하셨다면 no를 입력해주세요.");
         String noCheck = sc.next();
         // 입력체크
         if ("no".equalsIgnoreCase(noCheck)) {
-            throw new Exception("\n다시 입력해 주세요\n");
+            throw new Exception("\n처음부터 다시 입력해주세요.\n");
         } else {
             return studentName;
         }
