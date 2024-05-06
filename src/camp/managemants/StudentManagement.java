@@ -23,6 +23,11 @@ public class StudentManagement extends Management {
         StudentManagement.studentList = studentList;
     }
 
+    // 데이터 초기화
+    private void setInitData(List<Subject> subjectList) {
+        this.subjectList = subjectList;
+    }
+
     public void displayStudent(List<Subject> subjectList) {
         setInitData(subjectList);
         boolean isEnded = false;
@@ -30,14 +35,18 @@ public class StudentManagement extends Management {
             System.out.println("-----------------------------------------------");
             System.out.println("수강생 관리 실행 중...");
             System.out.println("1. 수강생 등록");
-            System.out.println("2. 수강생 목록 조회");
-            System.out.println("3. 메인 화면 이동");
+            System.out.println("2. 수강생 정보 수정");
+            System.out.println("3. 수강생 정보 조회");
+            System.out.println("4. 수강생 정보 삭제");
+            System.out.println("5. 메인 화면으로 이동");
             System.out.print("관리 항목을 선택하세요.\n");
             String input = sc.next();
             switch (input) {
                 case "1" -> addStudentInfo(); // 수강생 등록
-                case "2" -> inquiryStudentInfo(); // 수강생 목록 조회
-                case "3" -> isEnded = goBack(); // 메인화면 이동
+                case "2" -> modifyStudentInfo(); // 수강생 수정
+                case "3" -> displayInquiryStudent(); // 수강생 조회 디스플레이
+                case "4" -> removeStudentInfo(); // 수강생 정보 삭제
+                case "5" -> isEnded = goBack(); // 메인화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
@@ -45,9 +54,65 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 데이터 초기화
-    private void setInitData(List<Subject> subjectList) {
-        this.subjectList = subjectList;
+    // 수강생 목록 조회 디스플레이
+    private void displayInquiryStudent() {
+        boolean isEnded = false;
+        while (!isEnded) {
+            System.out.println("-----------------------------------------------");
+            System.out.println("수강생 목록 조회 실행 중...");
+            System.out.println("1. 전체 수강생 조회");
+            System.out.println("2. 단일 수강생 조회");
+            System.out.println("3. 상태별 수강생 조회");
+            System.out.println("4. 수강생 관리 화면으로 이동");
+            System.out.print("관리 항목을 선택하세요.\n");
+            String input2 = sc.next();
+            switch (input2) {
+                case "1" -> inquiryAllStudentInfo(); // 전체 수강생 정보 조회
+                case "2" -> inquirySingleStudentInfo(); // 단일 수강생 정보 조회
+                case "3" -> inquiryFeelingColorStudentInfo(); // 상태별 수강생 정보 조회
+                case "4" -> isEnded = goBack(); // 메인화면 이동
+                default -> {
+                    System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
+                }
+            }
+        }
+    }
+
+    // 수강생 정보 삭제
+    private void removeStudentInfo() {
+        /**
+         * 수강생 정보 삭제 기능 구현
+         */
+    }
+
+    // 수강생 정보 수정
+    private void modifyStudentInfo() {
+        /**
+         * 수강생 정보 수정 기능 구현
+         */
+    }
+
+    // 전체 수강생 목록 조회
+    private void inquiryAllStudentInfo() {
+        for (Student student : studentList) {
+            /**
+             * 조회 형식은 자유
+             */
+        }
+        System.out.println("수강생 관리 화면으로 돌아갑니다.");
+    }
+
+    // 단일 수강생 정보 조회
+    private void inquirySingleStudentInfo() {
+        /**
+         * 단일 수강생 정보 조회 기능 구현
+         */
+    }
+
+    private void inquiryFeelingColorStudentInfo() {
+        /**
+         * 상태별 수강생 정보 조회 기능 구현
+         */
     }
 
     // 수강생 등록
@@ -56,6 +121,7 @@ public class StudentManagement extends Management {
         while (!isEnded) {
             List<Subject> subjects; // 저장해야할 수강생의 과목 목록 데이터
             String studentName;
+            String studentFeelingColor;
             String[] selectMandatory;
             String[] selectChoice;
 
@@ -86,16 +152,24 @@ public class StudentManagement extends Management {
                 continue;
             }
 
+            // 수강생 상태 선택
+            try {
+                studentFeelingColor = inputStudentFeelingColor(); // 상태를 입력해서 결과를 주는 메서드
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
             // 최종체크 메서드
             try {
-                subjects = finalCheckStudentInfo(studentName, selectMandatory, selectChoice);
+                subjects = finalCheckStudentInfo(studentName, selectMandatory, selectChoice, studentFeelingColor);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
 
             // 수강생 모델 생성
-            Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, subjects);
+            Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, studentFeelingColor, subjects);
 
             // 모델 리스트에 저장
             studentList.add(student);
@@ -105,15 +179,6 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 수강생 목록 조회
-    private void inquiryStudentInfo() {
-        for (Student student : studentList) {
-            /**
-             * 조회 형식은 자유
-             */
-        }
-        System.out.println("수강생 관리 화면으로 돌아갑니다.");
-    }
 
     // 수강생 이름 입력 확인
     private String inputStudentName() throws Exception {
@@ -218,7 +283,7 @@ public class StudentManagement extends Management {
     }
 
     // 사용자가 최종 체크를 하는 메서드
-    private List<Subject> finalCheckStudentInfo(String studentName, String[] selectMandatory, String[] selectChoice) throws Exception{
+    private List<Subject> finalCheckStudentInfo(String studentName, String[] selectMandatory, String[] selectChoice, String studentFeelingColor) throws Exception{
         System.out.println("이름 : " + studentName);
 
         // 두개의 문자열 배열을 하나로 합침
@@ -258,6 +323,9 @@ public class StudentManagement extends Management {
                     + ", 선택한 과목 이름: [ " + subjectName + " ]");
         }
 
+        //수강생 상태 조회
+        System.out.println("\n수강생 상태 : " + studentFeelingColor);
+
         boolean isEnded = false;
         System.out.println("\n선택된 정보가 맞습니까? Y/N");
         while (!isEnded) {
@@ -273,6 +341,22 @@ public class StudentManagement extends Management {
         }return selectedSubjects;
     }
 
+    // 수강생 상태 저장 메서드
+    private String inputStudentFeelingColor() throws Exception {
+        System.out.println("수강생의 상태를 등록해주세요.\n");
+        System.out.println("1. 좋음 : Green ");
+        System.out.println("2. 보통 : Yellow ");
+        System.out.println("3. 나쁨 : Red ");
+        String input = sc.next();
+        isNumber(input);
+
+        switch (input) {
+            case "1": return GREEN;
+            case "2": return YELLOW;
+            case "3": return RED;
+            default: throw new Exception("입력이 잘못 되었습니다. 처음부터 다시 입력해주세요.");
+        }
+    }
 
     /**
      * 수강생의 과목 목록 출력(수강생이 존재하지 않으면 예외처리)

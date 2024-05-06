@@ -72,9 +72,14 @@ public class ScoreManagement extends Management {
         subjects3.add(subjectList.get(3));
         subjects3.add(subjectList.get(6));
         subjects3.add(subjectList.get(7));
-        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "원지연", subjects1));
-        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "유동현", subjects2));
-        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "조경민", subjects3));
+
+        /**
+         * 상태 저장을 추가로 구현했는데 테스트 코드 등록에는 상태가 없어서 오류로 인한 주석처리
+          */
+
+//        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "원지연", subjects1));
+//        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "유동현", subjects2));
+//        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "조경민", subjects3));
         studentManagement.setStudentList(students);
     }
 

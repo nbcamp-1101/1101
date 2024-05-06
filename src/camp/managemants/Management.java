@@ -15,6 +15,9 @@ public class Management {
     public static final String INDEX_TYPE_SUBJECT = "SU";
     public static int scoreIndex;
     public static final String INDEX_TYPE_SCORE = "SC";
+    public static final String GREEN = "Green";
+    public static final String RED = "Red";
+    public static final String YELLOW = "Yellow";
 
     // 스캐너
     public static Scanner sc = new Scanner(System.in);
@@ -49,6 +52,7 @@ public class Management {
         }
     }
 
+    // 이름 유효성 판단
     public void isText(String text) throws Exception {
         if (!Pattern.matches("^[가-힣a-zA-Z]+$", text)) {
             throw new Exception("\n제대로된 한글이나 영어로 이름을 입력해주세요. 처음으로 돌아갑니다.\n");
