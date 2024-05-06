@@ -186,7 +186,7 @@ public class StudentManagement extends Management {
 
     // 선택한 과목과 과목목록을 비교 확인후 목록에 있는 id 값만 남김
     private String[] conditionCheck(String type, String[] checkSubject)throws Exception{
-        // 입력한 번호가 신청한 과목의 id 값과 같은 값만을 저장
+        // 입력한 번호가 신청한 과목의 id 값과 같은지 확인후 같은 값만 남김
         Stream<String> checkSub = Arrays.stream(checkSubject)
                 .filter(input -> subjectList.stream()
                         .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
