@@ -2,10 +2,7 @@ package camp.managemants;
 
 import camp.model.Student;
 import camp.model.Subject;
-
-import java.sql.SQLOutput;
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StudentManagement extends Management {
@@ -72,7 +69,8 @@ public class StudentManagement extends Management {
 
             // 필수과목 선택과 조건확인
             try {
-                selectMandatory = checkSelectMandatory();
+                System.out.println("\n수강청한 필수과목 번호를 전부 입력하세요 (3개 이상 ex. 1,2,3)\n");
+                selectMandatory = checkSelectSubject(SUBJECT_TYPE_MANDATORY);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
@@ -80,7 +78,9 @@ public class StudentManagement extends Management {
 
             // 선택과목 선택과 조건확인
             try {
-                selectChoice = checkSelectChoice();
+                System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7,8)\n");
+                selectChoice = checkSelectSubject(SUBJECT_TYPE_CHOICE);
+
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
@@ -99,7 +99,8 @@ public class StudentManagement extends Management {
 
             // 모델 리스트에 저장
             studentList.add(student);
-            System.out.println("수강생 관리 화면으로 돌아갑니다.");
+            System.out.println("\n수강생 등록이 완료되었습니다.\n");
+            System.out.println("수강생 관리 화면으로 돌아갑니다.\n");
             isEnded = true;
         }
     }
@@ -118,113 +119,105 @@ public class StudentManagement extends Management {
     private String inputStudentName() throws Exception {
         System.out.println("등록할 수강생 이름을 입력하세요.");
         String studentName = sc.next();
-        System.out.println("입력값 : ["+ studentName + "] \n이름을 잘못 입력하셨다면 no를 입력해주세요.");
-        String noCheck = sc.next();
-        // 입력체크
-        if ("no".equalsIgnoreCase(noCheck)) {
-            throw new Exception("\n다시 입력해 주세요\n");
-        } else {
-            return studentName;
-        }
+
+        // 한글이나 영어 체크
+        isText(studentName);
+
+        // 이름 체크
+        boolean isEnded = false;
+        while (!isEnded) {
+            System.out.println("이름 : ["+ studentName + "] ");
+            System.out.println("이름을 잘 입력하셨습니까? Y/N");
+            String noCheck = sc.next();
+            if ("n".equalsIgnoreCase(noCheck)){
+                throw new Exception("\n처음부터 다시 입력해주세요.\n");
+            } else if ("y".equalsIgnoreCase(noCheck)){
+                return studentName;
+            } else {
+                System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");
+            }
+        }return studentName;
     }
 
-    //필수과목 목록 조회
-    private void viewMandatorySubject(){
+    // 목록 조회 메서드
+    private void viewSubject(String type){
         subjectList.stream()
-                .filter(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY))
+                .filter(subject -> subject.getSubjectType().equals(type))
                 .forEach(subject -> System.out.println("["+ subject.getSubjectId() + "번] " + subject.getSubjectName()));
     }
 
-    // 선택과목 목록 조회
-    private void viewChoiceSubject(){
-        subjectList.stream()
-                .filter(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE))
-                .forEach(subject -> System.out.println("["+ subject.getSubjectId() + "번] " + subject.getSubjectName()));
+
+    // 수강 신청한 과목 중복체크와 오름차순정렬
+    private String[] checkSelectSubject(String type) throws Exception {
+
+        // 조회 메서드
+        boolean isEnded = false;
+        String[] str;
+        String[] duplicationCheckedStr = new String[0];
+        while (!isEnded) {
+            try {
+                viewSubject(type);
+                System.out.print("\n입력 : ");
+                String selectSubject = sc.next();
+
+                //구분선 뺴고 저장
+                str = selectSubject.split(",");
+                isEnded = true;
+
+                // set 으로 변환했다 돌아옴으로써 중복 제거
+                LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
+                duplicationCheckedStr = linkedHashSet.toArray(new String[0]);
+
+                // 오름차순 정렬
+                Arrays.sort(duplicationCheckedStr);
+
+                // 입력된값이 숫자인지 확인
+                for (String s : duplicationCheckedStr) {
+                    isNumber(s);
+                }
+                return conditionCheck(type, duplicationCheckedStr);
+            } catch (Exception e){
+                throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
+                        + "\n처음으로 돌아갑니다.\n");
+            }
+        }
+        return duplicationCheckedStr;
     }
 
-    // 필수과목 중복체크와 오름차순정렬
-    private String[] checkSelectMandatory() throws Exception {
-
-        viewMandatorySubject(); // 필수과목 조회 메서드
-
-        System.out.println("\n수강청한 필수과목 번호를 전부 입력하세요 (3개 이상 ex. 1,2,3)");
-        String selectMandatory = sc.next();
-
-        //구분선 뺴고 저장
-        String[] str = selectMandatory.split(",");
-
-        // set 으로 변환했다 돌아옴으로써 중복 제거
-        LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
-        String[] duplicationCheckedStr = linkedHashSet.toArray(new String[0]);
-
-        // 오름차순 정렬
-        Arrays.sort(duplicationCheckedStr);
-
-        return conditionCheckMandatory(duplicationCheckedStr);
-    }
-
-    // 필수과목에 맞는 값인지 확인후 맞는 과목의 id만 남김
-    private String[] conditionCheckMandatory(String[] checkSubject)throws Exception{
-        // 입력한 번호가 신청한 필수과목의 id 값과 같은 값만을 저장
-        // 진짜 코드 가독성 똥이다..
+    // 선택한 과목과 과목목록을 비교 확인후 목록에 있는 id 값만 남김
+    private String[] conditionCheck(String type, String[] checkSubject)throws Exception{
+        // 입력한 번호가 신청한 과목의 id 값과 같은 값만을 저장
         Stream<String> checkSub = Arrays.stream(checkSubject)
                 .filter(input -> subjectList.stream()
-                        .anyMatch(subject -> Objects.equals(subject.getSubjectType(), SUBJECT_TYPE_MANDATORY)
+                        .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
                                 && Objects.equals(Integer.parseInt(input), subject.getSubjectId())));
 
-        // String 타입을 String[] 로 변환하여 리턴
+        // String 타입을 String[] 로 변환
         String[] checkedSubject = checkSub.toArray(String[]::new);
 
-        // 필수 과목 조건 확인
-        if (checkedSubject.length > 2) {
-//            System.out.println("신청한 필수 과목 : " + Arrays.toString(checkedSubject)); // test 코드
-            return checkedSubject;
+        // 과목 조건 확인
+        if (type.equals(SUBJECT_TYPE_MANDATORY)) {
+            if (checkedSubject.length > 2) {
+                return checkedSubject;
+            } else {
+                throw new Exception("\n입력값이 필수과목 조건에 맞지 않습니다." +
+                        "\n과목번호를 확인후 다시 입력해주세요. " +
+                        "\n처음으로 돌아갑니다.\n");
+            }
+        } else if (type.equals(SUBJECT_TYPE_CHOICE)) {
+            if (checkedSubject.length > 1) {
+                return checkedSubject;
+            } else {
+                throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +
+                        "\n과목번호를 확인후 다시 입력해주세요. " +
+                        "\n처음으로 돌아갑니다.\n");
+            }
         } else {
-            throw new Exception("\n신청한 필수과목이 3과목 미만입니다.\n");
+            throw new Exception("\n입력값이 잘못 되었습니다. 처음으로 돌아갑니다.\n");
         }
     }
 
-    // 선택과목 중복체크와 오름차순정렬
-    private String[] checkSelectChoice() throws Exception {
-
-        viewChoiceSubject(); // 선택과목 조회 메서드
-
-        System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7,8)");
-        String selectChoice = sc.next();
-
-        // 구분선을 빼고 저장
-        String[] str = selectChoice.split(",");
-
-        // set 으로 변환했다 돌아옴으로써 중복 제거
-        LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
-        String[] duplicationCheckedStr = linkedHashSet.toArray(new String[0]);
-
-        // 오름차순 정렬
-        Arrays.sort(duplicationCheckedStr);
-
-        return conditionCheckChoice(duplicationCheckedStr);
-    }
-
-    // 선택과목에 맞는 값인지 확인후 맞는 과목의 id만 남김
-    private String[] conditionCheckChoice(String[] checkSubject) throws Exception{
-        // 입력한 번호가 신청한 선택과목의 id 값과 같은 값만을 저장
-        Stream<String> checkSub = Arrays.stream(checkSubject)
-                .filter(input -> subjectList.stream()
-                        .anyMatch(subject -> Objects.equals(subject.getSubjectType(), SUBJECT_TYPE_CHOICE)
-                                && Objects.equals(Integer.parseInt(input), subject.getSubjectId())));
-
-        // String 타입을 String[] 로 변환하여 리턴
-        String[] checkedSubject = checkSub.toArray(String[]::new);
-
-        // 선택 과목 조건 확인
-        if (checkedSubject.length > 1) {
-//            System.out.println("신청한 선택 과목 : " + Arrays.toString(checkedSubject)); // test 코드
-            return checkedSubject;
-        } else {
-            throw new Exception("\n신청한 선택과목이 2과목 미만입니다.\n");
-        }
-    }
-
+    // 사용자가 최종 체크를 하는 메서드
     private List<Subject> finalCheckStudentInfo(String studentName, String[] selectMandatory, String[] selectChoice) throws Exception{
         System.out.println("이름 : " + studentName);
 
@@ -249,6 +242,8 @@ public class StudentManagement extends Management {
             // 찾은 Subject 객체가 null 이 아니면 리스트에 추가
             if (selectedSubject != null) {
                 selectedSubjects.add(selectedSubject);
+            } else {
+                throw new Exception("입력이 잘못되었습니다. 처음부터 다시 입력해주세요.");
             }
         }
 
@@ -263,13 +258,19 @@ public class StudentManagement extends Management {
                     + ", 선택한 과목 이름: [ " + subjectName + " ]");
         }
 
-        System.out.println("\n선택된 정보가 맞다면 yes, 틀리다면 no 를 입력하세요");
-        String finalCheckMsg = sc.next();
-        if ("yes".equalsIgnoreCase(finalCheckMsg)) {
-            return selectedSubjects;
-        } else {
-            throw new Exception("처음부터 다시 입력해주세요.");
-        }
+        boolean isEnded = false;
+        System.out.println("\n선택된 정보가 맞습니까? Y/N");
+        while (!isEnded) {
+            String finalCheckMsg = sc.next();
+            if ("y".equalsIgnoreCase(finalCheckMsg)) {
+                return selectedSubjects;
+            } else if ("n".equalsIgnoreCase(finalCheckMsg)) {
+                throw new Exception("처음으로 돌아갑니다." +
+                        "\n처음부터 다시 입력해주세요.");
+            } else {
+                System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");
+            }
+        }return selectedSubjects;
     }
 
 
