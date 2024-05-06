@@ -80,10 +80,10 @@ public class ScoreManagement extends Management {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private void addScore() {
-//        if (testInit) {
-//            testInitStudents(); // 테스트로 추가한 것
-//            testInit = false;
-//        }
+        if (testInit) {
+            testInitStudents(); // 테스트로 추가한 것
+            testInit = false;
+        }
         if (studentManagement.getStudentList().isEmpty()) {
             System.out.println("수강생이 없습니다. 수강생을 등록해 주세요.");
             return;
@@ -123,18 +123,20 @@ public class ScoreManagement extends Management {
             }
 
             // 회차, 점수 출력
-            int index = 0;
+            boolean[] isScoreExist = {false};
             boolean[] takeExam = new boolean[10];
-            for (Score score : scoreList) {
-                if (studentId != null && subjectId != null){
-                    if (String.valueOf(score.getStudentId()).equals(studentId) && String.valueOf(score.getSubjectId()).equals(subjectId)) {
-                        takeExam[index] = true;
-                        System.out.print((++index) + "회차 : " + score.getScore() + "점(" + score.getGrade() + "), ");
-                    }
-                }
+            if (!scoreList.isEmpty()) {
+                scoreList.stream()
+                        .filter(score -> String.valueOf(score.getStudentId()).equals(studentId) && String.valueOf(score.getSubjectId()).equals(subjectId))
+                        .sorted(Comparator.comparing(Score::getRound))
+                        .forEach(score -> {
+                            takeExam[score.getRound() - 1] = true;
+                            System.out.print(score.getRound() + "회차 : " + score.getScore() + "점(" + score.getGrade() + "), ");
+                            isScoreExist[0] = true;
+                        });
             }
-            if (index == 0) {
-                System.out.println("아직 점수를 등록하지 않았습니다.");
+            if (!isScoreExist[0]) {
+                System.out.print("아직 점수를 등록하지 않았습니다.");
             }
             // 회차 입력
             String round;
