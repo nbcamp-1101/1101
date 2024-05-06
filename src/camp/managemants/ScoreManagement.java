@@ -80,10 +80,10 @@ public class ScoreManagement extends Management {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private void addScore() {
-        if (testInit) {
-            testInitStudents(); // 테스트로 추가한 것
-            testInit = false;
-        }
+//        if (testInit) {
+//            testInitStudents(); // 테스트로 추가한 것
+//            testInit = false;
+//        }
         if (studentManagement.getStudentList().isEmpty()) {
             System.out.println("수강생이 없습니다. 수강생을 등록해 주세요.");
             return;
@@ -194,6 +194,10 @@ public class ScoreManagement extends Management {
     private void updateRoundScoreBySubject() {
         boolean isEnded = false;
         while (!isEnded) {
+            // 수강생 전체 조회
+            for (Student student : studentManagement.getStudentList()) {
+                System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
+            }
             // 수강생 번호 입력
             String studentId;
             try {
