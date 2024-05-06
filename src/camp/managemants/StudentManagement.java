@@ -70,7 +70,7 @@ public class StudentManagement extends Management {
                 case "1" -> inquiryAllStudentInfo(); // 전체 수강생 정보 조회
                 case "2" -> inquirySingleStudentInfo(); // 단일 수강생 정보 조회
                 case "3" -> inquiryFeelingColorStudentInfo(); // 상태별 수강생 정보 조회
-                case "4" -> isEnded = goBack(); // 메인화면 이동
+                case "4" -> isEnded = goBack(); // 수강생 관리 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
@@ -83,7 +83,6 @@ public class StudentManagement extends Management {
         for (Student student : studentList) {
             System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
         }
-        System.out.println("수강생 조회 화면으로 돌아갑니다.");
     }
 
     // 수강생 정보 삭제
@@ -107,6 +106,7 @@ public class StudentManagement extends Management {
          */
     }
 
+    // 상태별 수강생 목록 조회
     private void inquiryFeelingColorStudentInfo() {
         /**
          * 상태별 수강생 정보 조회 기능 구현

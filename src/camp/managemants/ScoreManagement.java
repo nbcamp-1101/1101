@@ -27,15 +27,38 @@ public class ScoreManagement extends Management {
             System.out.println("점수 관리 실행 중...");
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
-            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
+            System.out.println("3. 과목 조회");
             System.out.println("4. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요.\n");
             String input = sc.next();
             switch (input) {
                 case "1" -> addScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case "2" -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
-                case "3" -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
+                case "3" -> displayInquireScore(); // 수강생의 특정 과목 회차별 등급 조회
                 case "4" -> isEnded = goBack(); // 메인 화면 이동
+                default -> {
+                    System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
+                }
+            }
+        }
+    }
+
+    private void displayInquireScore() {
+        boolean isEnded = false;
+        while (!isEnded) {
+            System.out.println("-----------------------------------------------");
+            System.out.println("점수 조회 실행 중...");
+            System.out.println("1. 수강생의 특정 과목 회차별 등급 조회");
+            System.out.println("2. 수강생의 과목별 평균 등급 조회");
+            System.out.println("3. 특정 상태 수강생들의 필수 과목 등급 조회");
+            System.out.println("4. 점수 관리 화면으로 이동");
+            System.out.print("관리 항목을 선택하세요.\n");
+            String input = sc.next();
+            switch (input) {
+                case "1" -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
+//                case "2" -> ?(); // 수강생의 과목별 평균 등급 조회
+//                case "3" -> ?(); // 특정 상태 수강생들의 필수 과목 등급 조회
+                case "4" -> isEnded = goBack(); // 점수 관리 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
@@ -267,21 +290,47 @@ public class ScoreManagement extends Management {
 
     // 수강생의 특정 과목 회차별 등급 조회
     private void inquireRoundGradeBySubject() {
-        String studentId;
-        try {
-            studentId = getStudentId();
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
+        boolean isEnded = false;
+        while (!isEnded) {
+            // 수강생 전체 조회
+            studentManagement.inquiryAllStudentInfo();
+            // 수강생 번호 입력
+            String studentId;
+            try {
+                studentId = getStudentId();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            // 수강생의 과목 목록 출력
+            try {
+                //수강생의 과목 목록 출력
+                studentManagement.findSubjectByStudent(studentId);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            // 과목 번호 입력
+            String subjectId;
+            try {
+                subjectId = getSubjectId(studentId);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            // 과목의 전 회차 점수, 등급 출력
+            List<Score> scores;
+            try {
+                scores = inquireRoundScoreBySubject(studentId, subjectId);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+            isEnded = true;
         }
-        /**
-         * 수강생의 과목 고유 번호 목록 조회 구현
-         */
-        System.out.println("조회할 과목 번호를 입력해주세요.");
-        String subjectId = sc.nextLine();
-        System.out.println("회차별 등급을 조회합니다...");
-        /**
-         * 과목 회차별 등급 조회 구현
-         */
         System.out.println("등급 조회 성공");
         System.out.println("점수 관리 화면으로 돌아갑니다.");
     }
