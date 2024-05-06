@@ -103,7 +103,8 @@ public class ScoreManagement extends Management {
                 studentId = getStudentId();
                 sc.nextLine();
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
+                continue;
             }
 
             //수강생의 과목 목록 출력
