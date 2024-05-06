@@ -9,18 +9,12 @@ public class Score {
     private int score; // 점수
     private String grade; // 등급
 
-    public Score(int subjectId, int studentId, int round, int score) {
+    public Score(int subjectId, int studentId, int round, int score, String subjectType) throws Exception {
         this.subjectId = subjectId;
         this.studentId = studentId;
         this.round = round;
         this.score = score;
-    }
-    public Score(int subjectId, int studentId, int round, int score, String grade) {
-        this.subjectId = subjectId;
-        this.studentId = studentId;
-        this.round = round;
-        this.score = score;
-        this.grade = grade;
+        this.grade = scoreToGrade(score, subjectType);
     }
 
     public int getSubjectId() {
@@ -43,30 +37,53 @@ public class Score {
         return grade;
     }
 
-    public void setScore(int score) {
+    // 점수 수정
+    public void updateScoreAndGrade(int score, String subjectType) throws Exception {
         this.score = score;
+        this.grade = scoreToGrade(score, subjectType);
     }
 
-//    public boolean updateScoreBySubject(String round, String score) {
-//        boolean isEnded = false;
-//        Scanner sc = new Scanner(System.in);
-//        while (!isEnded) {
-//            System.out.println("수정하시겠습니까? (Y/N)");
-//            String question = sc.nextLine();
-//            if ("Y".equalsIgnoreCase(question)) {
-//                // 점수 수정
-//                this.score[Integer.parseInt(round) -1] = Integer.parseInt(score);
-//                System.out.println("점수 수정 성공");
-//                System.out.println("점수 관리 화면으로 돌아갑니다.");
-//                isEnded = true;
-//            }else if ("N".equalsIgnoreCase(question)) {
-//                isEnded = true;
-//            }else {
-//                continue;
-//            }
-//        }
-//        return isEnded;
-//    }
+    /**
+     * subjectId 로 필수인지 선택이지 확인하고
+     * 점수를 등급으로 변환
+     */
+    private String scoreToGrade(int score, String subjectType) throws Exception {
+        String grade;
+        switch (subjectType) {
+            case "MANDATORY" -> {
+                if (score >= 95) {
+                    grade = "A";
+                } else if (score >= 90) {
+                    grade = "B";
+                } else if (score >= 80) {
+                    grade = "C";
+                } else if (score >= 70) {
+                    grade = "D";
+                } else if (score >= 60) {
+                    grade = "F";
+                } else {
+                    grade = "N";
+                }
+            }
+            case "CHOICE" -> {
+                if (score >= 90) {
+                    grade = "A";
+                } else if (score >= 80) {
+                    grade = "B";
+                } else if (score >= 70) {
+                    grade = "C";
+                } else if (score >= 60) {
+                    grade = "D";
+                } else if (score >= 50) {
+                    grade = "F";
+                } else {
+                    grade = "N";
+                }
+            }
+            default -> throw new Exception("점수를 등급으로 바꾸는 과정에서 문제가 발생했습니다.");
+        }
+        return grade;
+    }
 
     @Override
     public String toString() {
