@@ -78,6 +78,14 @@ public class StudentManagement extends Management {
         }
     }
 
+    // 전체 수강생 목록 조회
+    public void inquiryAllStudentInfo() {
+        for (Student student : studentList) {
+            System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
+        }
+        System.out.println("수강생 조회 화면으로 돌아갑니다.");
+    }
+
     // 수강생 정보 삭제
     private void removeStudentInfo() {
         /**
@@ -90,16 +98,6 @@ public class StudentManagement extends Management {
         /**
          * 수강생 정보 수정 기능 구현
          */
-    }
-
-    // 전체 수강생 목록 조회
-    private void inquiryAllStudentInfo() {
-        for (Student student : studentList) {
-            /**
-             * 조회 형식은 자유
-             */
-        }
-        System.out.println("수강생 관리 화면으로 돌아갑니다.");
     }
 
     // 단일 수강생 정보 조회

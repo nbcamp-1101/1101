@@ -95,13 +95,8 @@ public class ScoreManagement extends Management {
         }
         boolean isEnded = false;
         while (!isEnded) {
-            /**
-             * studentManagement.inquiryStudentInfo(); inquiryStudentInfo() public으로 바꾸나?
-             */
             // 수강생 전체 조회
-            for (Student student : studentManagement.getStudentList()) {
-                System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
-            }
+            studentManagement.inquiryAllStudentInfo();
             // 수강생 번호 입력
             String studentId;
             try {
@@ -179,16 +174,14 @@ public class ScoreManagement extends Management {
                 continue;
             }
 
-            // 점수를 등급으로 변환
-            String grade;
             try {
-                grade = scoreToGrade(subjectId, score);
-            } catch (Exception e) {
+                scoreList.add(new Score(Integer.parseInt(subjectId), Integer.parseInt(studentId),
+                        Integer.parseInt(round), Integer.parseInt(score),
+                        subjectList.get(Integer.parseInt(subjectId)).getSubjectType()));
+            }catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
-
-            scoreList.add(new Score(Integer.parseInt(subjectId), Integer.parseInt(studentId), Integer.parseInt(round), Integer.parseInt(score), grade));
             System.out.println("점수 등록 성공");
 
             System.out.println("점수 관리 화면으로 돌아갑니다.");
@@ -201,9 +194,7 @@ public class ScoreManagement extends Management {
         boolean isEnded = false;
         while (!isEnded) {
             // 수강생 전체 조회
-            for (Student student : studentManagement.getStudentList()) {
-                System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
-            }
+            studentManagement.inquiryAllStudentInfo();
             // 수강생 번호 입력
             String studentId;
             try {
@@ -274,50 +265,6 @@ public class ScoreManagement extends Management {
         }
     }
 
-    /**
-     * subjectId 로 필수인지 선택이지 확인하고
-     * 점수를 등급으로 변환
-     */
-    private String scoreToGrade(String subjectId, String score) throws Exception {
-        String grade;
-        int tempSubjectId = Integer.parseInt(subjectId) - 1;
-        int tempScore = Integer.parseInt(score);
-        switch (subjectList.get(tempSubjectId).getSubjectType()) {
-            case "MANDATORY" -> {
-                if (tempScore >= 95) {
-                    grade = "A";
-                } else if (tempScore >= 90) {
-                    grade = "B";
-                } else if (tempScore >= 80) {
-                    grade = "C";
-                } else if (tempScore >= 70) {
-                    grade = "D";
-                } else if (tempScore >= 60) {
-                    grade = "F";
-                } else {
-                    grade = "N";
-                }
-            }
-            case "CHOICE" -> {
-                if (tempScore >= 90) {
-                    grade = "A";
-                } else if (tempScore >= 80) {
-                    grade = "B";
-                } else if (tempScore >= 70) {
-                    grade = "C";
-                } else if (tempScore >= 60) {
-                    grade = "D";
-                } else if (tempScore >= 50) {
-                    grade = "F";
-                } else {
-                    grade = "N";
-                }
-            }
-            default -> throw new Exception("점수를 등급으로 바꾸는 과정에서 문제가 발생했습니다.");
-        }
-        return grade;
-    }
-
     // 수강생의 특정 과목 회차별 등급 조회
     private void inquireRoundGradeBySubject() {
         String studentId;
@@ -383,7 +330,7 @@ public class ScoreManagement extends Management {
         }
 
         for (Score score : scores) {
-            System.out.print(score.getRound()+"회차 : " + score.getScore() + ", ");
+            System.out.print(score.getRound()+"회차 : " + score.getScore() + "점("+ score.getGrade() +"), ");
         }
         System.out.println();
 
@@ -400,7 +347,8 @@ public class ScoreManagement extends Management {
             }
         }).findFirst().orElse(null);
         if (scoreObj != null) {
-            scoreObj.setScore(Integer.parseInt(score));
+            String subjectType = subjectList.get(scoreObj.getSubjectId()).getSubjectType();
+            scoreObj.updateScoreAndGrade(Integer.parseInt(score), subjectType);
         }else {
             throw new Exception("해당 회차에 등록된 점수가 없습니다.");
         }
