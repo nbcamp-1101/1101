@@ -290,6 +290,7 @@ public class StudentManagement extends Management {
             System.out.print(subject.getSubjectId()+". ");
             System.out.print(subject.getSubjectName()+", ");
         }
+        System.out.println();
     }
 
     /**

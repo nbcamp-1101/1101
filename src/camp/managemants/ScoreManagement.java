@@ -232,7 +232,7 @@ public class ScoreManagement extends Management {
             String round;
             try {
                 System.out.println("회차를 입력해주세요.");
-                round = sc.nextLine();
+                round = sc.next();
                 isNumber(round);
                 isValid(round, "round");
             }catch (Exception e) {
@@ -244,7 +244,7 @@ public class ScoreManagement extends Management {
             String score;
             try {
                 System.out.println("수정할 점수를 입력해주세요. (0~100)");
-                score = sc.nextLine();
+                score = sc.next();
                 isNumber(score);
                 isValid(score, "score");
             }catch (Exception e) {
@@ -373,6 +373,7 @@ public class ScoreManagement extends Management {
         for (Score score : scores) {
             System.out.print(score.getRound()+"회차 : " + score.getScore() + ", ");
         }
+        System.out.println();
 
         return scores;
     }
