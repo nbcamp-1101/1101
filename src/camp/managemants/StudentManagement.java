@@ -3,7 +3,6 @@ package camp.managemants;
 import camp.model.Student;
 import camp.model.Subject;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class StudentManagement extends Management {
 
@@ -82,7 +81,7 @@ public class StudentManagement extends Management {
     public void inquiryAllStudentInfo() {
         try {
             findStudentList();
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -119,7 +118,7 @@ public class StudentManagement extends Management {
             // 전체 수강생 목록 출력
             try {
                 findStudentList();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 break;
             }
@@ -128,7 +127,7 @@ public class StudentManagement extends Management {
             String studentId;
             try {
                 studentId = getStudentId();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
@@ -136,7 +135,7 @@ public class StudentManagement extends Management {
             // 수강생의 정보 출력
             try {
                 findStudentInfo(studentId);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
@@ -157,7 +156,7 @@ public class StudentManagement extends Management {
             String feelingColor;
             try {
                 feelingColor = getFeelingColor();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
@@ -165,7 +164,7 @@ public class StudentManagement extends Management {
             // 상태별 수강생 목록 출력
             try {
                 outputStudentByFeelingColor(feelingColor);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 break;
             }
@@ -188,62 +187,42 @@ public class StudentManagement extends Management {
             throw new Exception("등록된 수강생이 존재하지 않습니다. 수강생을 등록해주세요");
         }
         List<Student> students = studentList.stream()
-                .filter(f->f.getFeelingColor().equals(feelingColor)).toList();
+                .filter(f -> f.getFeelingColor().equals(feelingColor)).toList();
         if (students.isEmpty()) {
             throw new Exception("입력하신 상태의 학생이 존재하지 않습니다.");
         }
         return students;
     }
 
-    // 수강생 등록
+    /**
+     * 수강생 등록
+     */
     private void addStudentInfo() {
         boolean isEnded = false;
         while (!isEnded) {
-            List<Subject> subjects; // 저장해야할 수강생의 과목 목록 데이터
-            String studentName;
-            String studentFeelingColor;
-            String[] selectMandatory;
-            String[] selectChoice;
+            List<Subject> subjects = new ArrayList<>(); // 저장해야할 수강생의 과목 목록 데이터
+            String studentName; // 저장해야할 수강생 이름
+            String studentFeelingColor; // 저장해야할 수강생 상태
 
-            System.out.println("수강생 등록 실행 중...");
+            // 갇히는 문제와 스테이지별 다시하기 기능
             try {
+                // 수강생 이름 등록
                 studentName = inputStudentName();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
 
-            // 필수과목 선택과 조건확인
-            try {
-                System.out.println("\n수강청한 필수과목 번호를 전부 입력하세요 (3개 이상 ex. 1,2,3)\n");
-                selectMandatory = checkSelectSubject(SUBJECT_TYPE_MANDATORY);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
+                // 필수과목 신청
+                List<Subject> mandatorySubjects = SelectSubject(SUBJECT_TYPE_MANDATORY);
+                subjects.addAll(mandatorySubjects);
 
-            // 선택과목 선택과 조건확인
-            try {
-                System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7,8)\n");
-                selectChoice = checkSelectSubject(SUBJECT_TYPE_CHOICE);
+                // 선택과목 신청
+                List<Subject> choiceSubjects = SelectSubject(SUBJECT_TYPE_CHOICE);
+                subjects.addAll(choiceSubjects);
 
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
+                // 수강생 상태 선택
+                studentFeelingColor = getFeelingColor();
 
-            // 수강생 상태 선택
-            try {
-                studentFeelingColor = inputStudentFeelingColor(); // 상태를 입력해서 결과를 주는 메서드
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
+                // 최종체크 메서드
+                finalCheckStudentInfo(subjects, studentName, studentFeelingColor);
 
-            // 최종체크 메서드
-            try {
-                subjects = addSelectSubject(studentName, selectMandatory, selectChoice); // 신청한 과목 정보 추가
-                finalCheckStudentInfo(subjects, studentName , studentFeelingColor); // 최종 확인 메서드
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
@@ -260,13 +239,16 @@ public class StudentManagement extends Management {
         }
     }
 
-
-    // 수강생 이름 입력 확인
+    /**
+     * 수강생 이름 입력 확인
+     * @return : 입력받은 수강생 이름
+     */
     private String inputStudentName() throws Exception {
-        System.out.println("등록할 수강생 이름을 입력하세요.");
+        System.out.println("수강생 등록 실행 중...");
+        System.out.println("등록할 수강생 이름을 입력하세요. (한글이나 영어만 입력가능)");
         String studentName = sc.next();
 
-        // 한글이나 영어 체크
+        // 이름 유효성 확인 (한글 & 영어)
         isText(studentName);
 
         // 이름 체크
@@ -286,120 +268,107 @@ public class StudentManagement extends Management {
         return studentName;
     }
 
-    // 목록 조회 메서드
+    /**
+     * 과목 목록 조회 메서드
+     * @param type : 과목 타입
+     */
     private void viewSubject(String type) {
         subjectList.stream()
                 .filter(subject -> subject.getSubjectType().equals(type))
                 .forEach(subject -> System.out.println("[" + subject.getSubjectId() + "번] " + subject.getSubjectName()));
     }
 
+    /**
+     * 과목 선택 저장
+     * @param type : 과목 타입
+     * @return : 신청한 과목의 정보 리스트
+     */
+    private List<Subject> SelectSubject(String type) throws Exception {
 
-    // 수강 신청한 과목 중복체크와 오름차순정렬
-    private String[] checkSelectSubject(String type) throws Exception {
+        List<Subject> selectedSubjects = new ArrayList<>(); // 과목 선택을 저장할 리스트 선언
 
-        // 조회 메서드
-        boolean isEnded = false;
-        String[] str;
-        String[] duplicationCheckedStr = new String[0];
-        while (!isEnded) {
-            try {
-                viewSubject(type);
-                System.out.print("\n입력 : ");
-                String selectSubject = sc.next();
-
-                //구분선 뺴고 저장
-                str = selectSubject.split(",");
-                isEnded = true;
-
-                // set 으로 변환했다 돌아옴으로써 중복 제거
-                LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(str));
-                duplicationCheckedStr = linkedHashSet.toArray(new String[0]);
-
-                // 오름차순 정렬
-                Arrays.sort(duplicationCheckedStr);
-
-                // 입력된값이 숫자인지 확인
-                for (String s : duplicationCheckedStr) {
-                    isNumber(s);
-                }
-                return conditionCheck(type, duplicationCheckedStr);
-            } catch (Exception e) {
-                throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
-                        + "\n처음으로 돌아갑니다.\n");
-            }
-        }
-        return duplicationCheckedStr;
-    }
-
-    // 선택한 과목과 과목목록을 비교 확인후 목록에 있는 id 값만 남김
-    private String[] conditionCheck(String type, String[] checkSubject) throws Exception {
-        // 입력한 번호가 신청한 과목의 id 값과 같은지 확인후 같은 값만 남김
-        Stream<String> checkSub = Arrays.stream(checkSubject)
-                .filter(input -> subjectList.stream()
-                        .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
-                                && Objects.equals(Integer.parseInt(input), subject.getSubjectId())));
-
-        // String 타입을 String[] 로 변환
-        String[] checkedSubject = checkSub.toArray(String[]::new);
-
-        // 과목 조건 확인
-        if (type.equals(SUBJECT_TYPE_MANDATORY)) {
-            if (checkedSubject.length > 2) {
-                System.out.println("\n저장된 과목 번호 : " + Arrays.toString(checkedSubject));
-                return checkedSubject;
-            } else {
-                throw new Exception("\n입력값이 필수과목 조건에 맞지 않습니다." +
-                        "\n과목번호를 확인후 다시 입력해주세요. " +
-                        "\n처음으로 돌아갑니다.\n");
-            }
-        } else if (type.equals(SUBJECT_TYPE_CHOICE)) {
-            if (checkedSubject.length > 1) {
-                System.out.println("\n저장된 과목 번호 : " + Arrays.toString(checkedSubject));
-                return checkedSubject;
-            } else {
-                throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +
-                        "\n과목번호를 확인후 다시 입력해주세요. " +
-                        "\n처음으로 돌아갑니다.\n");
-            }
+        // 타입에 맞춰 문구 출력
+        if (SUBJECT_TYPE_MANDATORY.equals(type)) {
+            System.out.println("\n수강신청한 필수과목 번호를 전부 입력하세요 (3개 이상 ex. 1,2,3)\n");
         } else {
-            throw new Exception("\n입력값이 잘못 되었습니다. 처음으로 돌아갑니다.\n");
+            System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7)\n");
         }
-    }
 
-    // Subject 리스트에 신청한 과목을 추가하는 메서드
-    private List<Subject> addSelectSubject(String studentName, String[] selectMandatory, String[] selectChoice) throws Exception {
-        // 수강생이 선택한 필수와 선택 두개의 문자열 배열을 하나의 문자열 배열로 합침
-        String[] selectSubject = new String[selectMandatory.length + selectChoice.length];
-        System.arraycopy(selectMandatory, 0, selectSubject, 0, selectMandatory.length);
-        System.arraycopy(selectChoice, 0, selectSubject, selectMandatory.length, selectChoice.length);
+        try {
+            viewSubject(type); // 선택할 과목 목록 조회
+            System.out.print("\n입력 : ");
+            String selectSubject = sc.next();
 
-        // Student 객체 생성에 필요한 선택한 과목의 정보를 담을 리스트 생성
-        List<Subject> selectedSubjects = new ArrayList<>();
+            // 쉼표로 구분된 값을 리스트로 변환
+            List<String> inputSelectSubject = Arrays.asList(selectSubject.split(","));
 
-        // 합쳐진 배열의 값들과 과목 고유번호와 비교하기위해 int 형으로 변환
-        for (String subjectId : selectSubject) {
-            int id = Integer.parseInt(subjectId);
+            // 입력된 번호가 유효한지 확인하고 저장
+            inputSelectSubject = validateInput(type, inputSelectSubject);
 
-            // subjectList 에서 고유 번호에 해당하는 정보들을 찾아내어 selectedSubjects 리스트에 추가 값이 없다면 null 값 출력
-            Subject selectedSubject = subjectList.stream()
-                    .filter(subject -> subject.getSubjectId() == id)
-                    .findFirst()
-                    .orElse(null);
-
-            // 찾은 Subject 객체가 null 이 아니면 리스트에 추가
-            if (selectedSubject != null) {
-                selectedSubjects.add(selectedSubject);
-            } else {
-                throw new Exception("등록과정에서 오류가 발생했습니다. 처음부터 다시 입력해주세요.");
+            // 입력된 값을 하나하나 돌면서 과목 리스트에서 동일한 값을 찾아서 저장 (찾으면 리스트에 추가후 break)
+            for (String input : inputSelectSubject) {
+                int selectedId = Integer.parseInt(input);
+                for (Subject subject : subjectList) {
+                    if (subject.getSubjectType().equals(type) && subject.getSubjectId() == selectedId) {
+                        selectedSubjects.add(subject);
+                        break;
+                    }
+                }
             }
+        } catch (Exception e) {
+            throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
+                    + "\n처음으로 돌아갑니다.\n");
         }
+
+        // 필수과목은 3개 이상, 선택과목은 2개 이상을 선택했는지 확인
+        // (유지보수를 위해 요구 조건인 3과 2를 상수로 선언하는 것이 좋은가?)-----------------
+        if ((type.equals(SUBJECT_TYPE_MANDATORY) && selectedSubjects.size() < 3) ||
+                (type.equals(SUBJECT_TYPE_CHOICE) && selectedSubjects.size() < 2)) {
+            throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +
+                    "\n과목번호를 확인후 다시 입력해주세요. " +
+                    "\n처음으로 돌아갑니다.\n");
+        }
+
+        // 신청한 과목 이름 확인
+        System.out.print("\n신청한 과목 : ");
+        for (Subject subject : selectedSubjects) {
+            String subjectName = subject.getSubjectName();
+            System.out.print("[ " + subjectName + " ] ");
+        }
+        System.out.println();
         return selectedSubjects;
     }
 
-    // 최종 확인을 위한 선택한 내용 출력
-    private void finalCheckStudentInfo(List<Subject> subjects, String studentName, String studentFeelingColor) throws Exception {
+    /**
+     * 입력된 번호의 유효성 확인 메서드
+     * @param type : 과목 타입
+     * @param inputSelectSubject : 사용에게 입력받은 수강 신청 과목 번호
+     * @return : 입력값과 동일한 번호를 가지고 타입이 일치하는 과목들의 고유번호만 남긴 리스트 반환
+     */
+    private List<String> validateInput(String type, List<String> inputSelectSubject) throws Exception {
+        // 중복제거
+        Set<String> removeDuplicates= new HashSet<>(inputSelectSubject);
+        List<String> validatedInput = new ArrayList<>(removeDuplicates);
 
-        // 수강생이 신청한 과목 조회
+        // 숫자 유효성 확인
+        for (String s : validatedInput) {
+            isNumber(s);
+        }
+
+        return validatedInput.stream()
+                .filter(input -> subjectList.stream()
+                        .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
+                                && Objects.equals(Integer.parseInt(input), subject.getSubjectId())))
+                .toList();
+    }
+
+    /**
+     * 수강생 등록 최종 확인 메서드
+     * @param subjects : 수강생의 신청 과목 정보
+     * @param studentName : 수강생 이름
+     * @param studentFeelingColor : 수강생 상태
+     */
+    private void finalCheckStudentInfo(List<Subject> subjects, String studentName, String studentFeelingColor) throws Exception {
         for (Subject subject : subjects) {
             int subjectId = subject.getSubjectId();
             String subjectName = subject.getSubjectName();
@@ -407,14 +376,11 @@ public class StudentManagement extends Management {
 
             System.out.println("선택한 과목 번호: " + subjectId
                     + ", 선택한 과목 타입: " + subjectType
-                    + ", 선택한 과목 이름: [ " + subjectName + " ]");
+                    + ", 선택한 과목 이름: [" + subjectName + "]");
         }
 
-        // 수강생 이름 조회
         System.out.println("\n이름 : " + studentName);
-
-        //수강생 상태 조회
-        System.out.println("\n수강생 상태 : " + studentFeelingColor);
+        System.out.println("수강생 상태 : " + studentFeelingColor);
 
         boolean isEnded = false;
         System.out.println("\n선택된 정보가 맞습니까? Y/N");
@@ -428,23 +394,6 @@ public class StudentManagement extends Management {
             } else {
                 System.out.println("잘못된 입력입니다. Y 또는 N를 입력해주세요.");
             }
-        }
-    }
-
-    // 수강생 상태 저장 메서드
-    private String inputStudentFeelingColor() throws Exception {
-        System.out.println("수강생의 상태를 등록해주세요.\n");
-        System.out.println("1. 좋음 : Green ");
-        System.out.println("2. 보통 : Yellow ");
-        System.out.println("3. 나쁨 : Red ");
-        String input = sc.next();
-        isNumber(input);
-
-        switch (input) {
-            case "1": return GREEN;
-            case "2": return YELLOW;
-            case "3": return RED;
-            default: throw new Exception("입력이 잘못 되었습니다. 처음부터 다시 입력해주세요.");
         }
     }
 
