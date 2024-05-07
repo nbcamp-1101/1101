@@ -17,6 +17,9 @@ public class Score {
         this.grade = scoreToGrade(score, subjectType);
     }
 
+    public Score() {
+    }
+
     public int getSubjectId() {
         return subjectId;
     }
@@ -47,7 +50,7 @@ public class Score {
      * subjectId 로 필수인지 선택이지 확인하고
      * 점수를 등급으로 변환
      */
-    private String scoreToGrade(int score, String subjectType) throws Exception {
+    public String scoreToGrade(int score, String subjectType) throws Exception {
         String grade;
         switch (subjectType) {
             case "MANDATORY" -> {
