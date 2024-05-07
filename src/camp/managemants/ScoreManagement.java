@@ -55,7 +55,7 @@ public class ScoreManagement extends Management {
             String input = sc.next();
             switch (input) {
                 case "1" -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-//                case "2" -> ?(); // 수강생의 과목별 평균 등급 조회
+                case "2" -> inquireAverageGradeBySubjectForStudents(); // 수강생의 과목별 평균 등급 조회
 //                case "3" -> ?(); // 특정 상태 수강생들의 필수 과목 등급 조회
                 case "4" -> isEnded = goBack(); // 점수 관리 화면 이동
                 default -> {
@@ -73,10 +73,6 @@ public class ScoreManagement extends Management {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private void addScore() {
-//        if (testInit) {
-//            testInitStudents(); // 테스트로 추가한 것
-//            testInit = false;
-//        }
         boolean isEnded = false;
         while (!isEnded) {
             // 수강생 전체 조회
@@ -167,7 +163,7 @@ public class ScoreManagement extends Management {
             try {
                 scoreList.add(new Score(Integer.parseInt(subjectId), Integer.parseInt(studentId),
                         Integer.parseInt(round), Integer.parseInt(score),
-                        subjectList.get(Integer.parseInt(subjectId)).getSubjectType()));
+                        subjectList.get(Integer.parseInt(subjectId) - 1).getSubjectType()));
             }catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
@@ -314,6 +310,77 @@ public class ScoreManagement extends Management {
         }
     }
 
+    private void inquireAverageGradeBySubjectForStudents() {
+        boolean isEnded = false;
+        while (!isEnded) {
+            // 수강생 전체 조회
+            try {
+                studentManagement.findStudentList();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+            // 수강생 번호 입력
+            String studentId;
+            try {
+                studentId = getStudentId();
+                sc.nextLine();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            //수강생의 과목 목록 출력
+            try {
+                studentManagement.findSubjectByStudent(studentId);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+            // 과목 번호 입력
+            String subjectId;
+            try {
+                subjectId = getSubjectId(studentId);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            // 회차, 점수 출력
+            List<Integer> list = new ArrayList<>();
+            boolean[] isScoreExist = {false};
+            if (!scoreList.isEmpty()) {
+                scoreList.stream()
+                        .filter(score -> String.valueOf(score.getStudentId()).equals(studentId) && String.valueOf(score.getSubjectId()).equals(subjectId))
+                        .sorted(Comparator.comparing(Score::getRound))
+                        .forEach(score -> {
+                            System.out.print(score.getRound() + "회차 : " + score.getScore() + "점(" + score.getGrade() + "), ");
+                            isScoreExist[0] = true;
+                            list.add(score.getScore());
+                        });
+            }
+            if (!isScoreExist[0]) {
+                System.out.print("아직 점수를 등록하지 않았습니다. 먼저 점수를 등록해 주세요.");
+                break;
+            }
+            int averageSubject = (int) list.stream().mapToInt(Integer::intValue).average().orElse(0);
+            Score score = new Score();
+            String subjectName = subjectList.get(Integer.parseInt(subjectId) - 1).getSubjectName();
+            String subjectType = subjectList.get(Integer.parseInt(subjectId) - 1).getSubjectType();
+            String averageGradeSubject;
+            try {
+                 averageGradeSubject = score.scoreToGrade(averageSubject, subjectType);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("점수 관리 화면으로 돌아갑니다.");
+                break;
+            }
+            System.out.println("\n" + subjectName + "의 평균은 " + averageSubject + "점(" + averageGradeSubject + ") 입니다.");
+
+            System.out.println("점수 관리 화면으로 돌아갑니다.");
+            isEnded = true;
+        }
+    }
 
     /**
      *
@@ -367,7 +434,7 @@ public class ScoreManagement extends Management {
             }
         }).findFirst().orElse(null);
         if (scoreObj != null) {
-            String subjectType = subjectList.get(scoreObj.getSubjectId()).getSubjectType();
+            String subjectType = subjectList.get(scoreObj.getSubjectId() - 1).getSubjectType();
             scoreObj.updateScoreAndGrade(Integer.parseInt(score), subjectType);
         }else {
             throw new Exception("해당 회차에 등록된 점수가 없습니다.");
