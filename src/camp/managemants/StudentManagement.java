@@ -162,6 +162,7 @@ public class StudentManagement extends Management {
                 continue;
             }
 
+            // 상태별 수강생 목록 출력
             try {
                 ouputStudentByFeelingColor(feelingColor);
             }catch (Exception e) {
