@@ -6,7 +6,6 @@ import camp.model.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class MainManagement extends Management {
     // 과목 데이터
