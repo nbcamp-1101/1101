@@ -294,39 +294,41 @@ public class StudentManagement extends Management {
             System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7)\n");
         }
 
+        List<String> inputSelectSubject;
         try {
             viewSubject(type); // 선택할 과목 목록 조회
             System.out.print("\n입력 : ");
             String selectSubject = sc.next();
 
             // 쉼표로 구분된 값을 리스트로 변환
-            List<String> inputSelectSubject = Arrays.asList(selectSubject.split(","));
+            inputSelectSubject = Arrays.asList(selectSubject.split(","));
 
-            // 입력된 번호가 유효한지 확인하고 저장
-            inputSelectSubject = validateInput(type, inputSelectSubject);
-
-            // 입력된 값을 하나하나 돌면서 과목 리스트에서 동일한 값을 찾아서 저장 (찾으면 리스트에 추가후 break)
-            for (String input : inputSelectSubject) {
-                int selectedId = Integer.parseInt(input);
-                for (Subject subject : subjectList) {
-                    if (subject.getSubjectType().equals(type) && subject.getSubjectId() == selectedId) {
-                        selectedSubjects.add(subject);
-                        break;
-                    }
-                }
-            }
         } catch (Exception e) {
             throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
                     + "\n처음으로 돌아갑니다.\n");
         }
 
+        // 입력된 번호가 유효한지 확인하고 저장
+        inputSelectSubject = validateInput(type, inputSelectSubject);
+
         // 필수과목은 3개 이상, 선택과목은 2개 이상을 선택했는지 확인
         // (유지보수를 위해 요구 조건인 3과 2를 상수로 선언하는 것이 좋은가?)-----------------
-        if ((type.equals(SUBJECT_TYPE_MANDATORY) && selectedSubjects.size() < 3) ||
-                (type.equals(SUBJECT_TYPE_CHOICE) && selectedSubjects.size() < 2)) {
+        if ((type.equals(SUBJECT_TYPE_MANDATORY) && inputSelectSubject.size() < 3) ||
+                (type.equals(SUBJECT_TYPE_CHOICE) && inputSelectSubject.size() < 2)) {
             throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +
                     "\n과목번호를 확인후 다시 입력해주세요. " +
                     "\n처음으로 돌아갑니다.\n");
+        }
+
+        // 입력된 값을 하나하나 돌면서 과목 리스트에서 동일한 값의 주소를 찾아서 저장 (찾으면 리스트에 추가후 break)
+        for (String input : inputSelectSubject) {
+            int selectedId = Integer.parseInt(input);
+            for (Subject subject : subjectList) {
+                if (subject.getSubjectType().equals(type) && subject.getSubjectId() == selectedId) {
+                    selectedSubjects.add(subject);
+                    break;
+                }
+            }
         }
 
         // 신청한 과목 이름 확인
@@ -343,7 +345,7 @@ public class StudentManagement extends Management {
      * 입력된 번호의 유효성 확인 메서드
      * @param type : 과목 타입
      * @param inputSelectSubject : 사용에게 입력받은 수강 신청 과목 번호
-     * @return : 입력값과 동일한 번호를 가지고 타입이 일치하는 과목들의 고유번호만 남긴 리스트 반환
+     * @return : 입력값과 동일한 번호를 가지고 타입이 일치하는 과목들의 고유번호만 오름차순으로 정렬 후 리스트 반환
      */
     private List<String> validateInput(String type, List<String> inputSelectSubject) throws Exception {
         // 중복제거
@@ -357,8 +359,9 @@ public class StudentManagement extends Management {
 
         return validatedInput.stream()
                 .filter(input -> subjectList.stream()
-                        .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
+                         .anyMatch(subject -> Objects.equals(subject.getSubjectType(), type)
                                 && Objects.equals(Integer.parseInt(input), subject.getSubjectId())))
+                .sorted(Comparator.comparingInt(Integer::parseInt))
                 .toList();
     }
 
