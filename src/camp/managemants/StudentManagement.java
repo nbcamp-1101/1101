@@ -104,6 +104,7 @@ public class StudentManagement extends Management {
         /**
          * 단일 수강생 정보 조회 기능 구현
          */
+        // test
     }
 
     // 상태별 수강생 목록 조회
