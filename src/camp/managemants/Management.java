@@ -71,4 +71,12 @@ public class Management {
             }
         }
     }
+
+    // 수강생 번호 입력
+    public String getStudentId() throws Exception {
+        System.out.println("관리할 수강생의 번호를 입력해주세요.");
+        String studentId = sc.next();
+        isNumber(studentId);
+        return studentId;
+    }
 }
