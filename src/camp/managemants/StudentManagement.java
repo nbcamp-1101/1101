@@ -167,7 +167,7 @@ public class StudentManagement extends Management {
                 ouputStudentByFeelingColor(feelingColor);
             }catch (Exception e) {
                 System.out.println(e.getMessage());
-                continue;
+                break;
             }
 
             isEnded = goBack();
