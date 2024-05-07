@@ -79,4 +79,19 @@ public class Management {
         isNumber(studentId);
         return studentId;
     }
+
+    // 상태 종류 출력 및 상태 입력
+    public String getFeelingColor() throws Exception {
+        String[] feelingColor = {GREEN, YELLOW, RED};
+        System.out.println("1. 좋음 : Green ");
+        System.out.println("2. 보통 : Yellow ");
+        System.out.println("3. 나쁨 : Red ");
+        System.out.println("상태를 입력해주세요.");
+        String feeling = sc.next();
+        isNumber(feeling);
+        if (Integer.parseInt(feeling) <= 0 || Integer.parseInt(feeling) > feelingColor.length) {
+            throw new Exception("잘못된 입력입니다. 1부터" + feelingColor.length + "사이에 숫자를 입력해주세요.");
+        }
+        return feelingColor[Integer.parseInt(feeling)-1];
+    }
 }
