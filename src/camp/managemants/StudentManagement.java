@@ -268,7 +268,7 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 목록 조회 메서드
+     * 과목 목록 조회 메서드
      * @param type : 과목 타입
      */
     private void viewSubject(String type) {
