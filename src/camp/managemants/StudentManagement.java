@@ -204,43 +204,24 @@ public class StudentManagement extends Management {
             String studentName; // 저장해야할 수강생 이름
             String studentFeelingColor; // 저장해야할 수강생 상태
 
-            // 수강생 이름 등록
             try {
+                // 수강생 이름 등록
                 studentName = inputStudentName();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
 
-            // 필수과목 신청
-            try {
+                // 필수과목 신청
                 List<Subject> mandatorySubjects = SelectSubject(SUBJECT_TYPE_MANDATORY);
                 subjects.addAll(mandatorySubjects);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
 
-            // 선택과목 신청
-            try {
+                // 선택과목 신청
                 List<Subject> choiceSubjects = SelectSubject(SUBJECT_TYPE_CHOICE);
                 subjects.addAll(choiceSubjects);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
 
-            // 수강생 상태 선택
-            try {
+                // 수강생 상태 선택
                 studentFeelingColor = getFeelingColor();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
 
-            // 최종체크 메서드
-            try {
+                // 최종체크 메서드
                 finalCheckStudentInfo(subjects, studentName, studentFeelingColor);
+
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
