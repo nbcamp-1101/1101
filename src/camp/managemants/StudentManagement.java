@@ -113,9 +113,6 @@ public class StudentManagement extends Management {
 
     // 단일 수강생 정보 조회
     private void inquirySingleStudentInfo() {
-        /**
-         * 단일 수강생 정보 조회 기능 구현
-         */
         boolean isEnded = false;
         while (!isEnded) {
             System.out.println("단일 수강생 조회 실행 중...");
@@ -153,6 +150,48 @@ public class StudentManagement extends Management {
         /**
          * 상태별 수강생 정보 조회 기능 구현
          */
+        boolean isEnded = false;
+        while (!isEnded) {
+            System.out.println("상태별 수강생 목록 조회 실행 중...");
+            // 상태 종류 출력 및 상태 입력
+            String feelingColor;
+            try {
+                feelingColor = getFeelingColor();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            try {
+                ouputStudentByFeelingColor(feelingColor);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            isEnded = goBack();
+        }
+    }
+
+    // 상태별 수강생 목록 출력
+    private void ouputStudentByFeelingColor(String feelingColor) throws Exception {
+        List<Student> students = getStudentByFeelingColor(feelingColor);
+        for (Student student : students) {
+            System.out.println(student.getStudentId() + ". " + student.getStudentName());
+        }
+    }
+
+    // 특정 상태 수강생 목록 반환
+    public List<Student> getStudentByFeelingColor(String feelingColor) throws Exception {
+        if (studentList.isEmpty()) {
+            throw new Exception("등록된 수강생이 존재하지 않습니다. 수강생을 등록해주세요");
+        }
+        List<Student> students = studentList.stream()
+                .filter(f->f.getFeelingColor().equals(feelingColor)).toList();
+        if (students.isEmpty()) {
+            throw new Exception("입력하신 상태의 학생이 존재하지 않습니다.");
+        }
+        return students;
     }
 
     // 수강생 등록
