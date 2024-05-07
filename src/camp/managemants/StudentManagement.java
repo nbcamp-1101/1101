@@ -204,6 +204,7 @@ public class StudentManagement extends Management {
             String studentName; // 저장해야할 수강생 이름
             String studentFeelingColor; // 저장해야할 수강생 상태
 
+            // 갇히는 문제와 스테이지별 다시하기 기능
             try {
                 // 수강생 이름 등록
                 studentName = inputStudentName();
