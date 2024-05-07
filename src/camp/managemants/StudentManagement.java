@@ -80,6 +80,18 @@ public class StudentManagement extends Management {
 
     // 전체 수강생 목록 조회
     public void inquiryAllStudentInfo() {
+        try {
+            findStudentList();
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // 전체 수강생 목록 조회
+    public void findStudentList() throws Exception {
+        if (studentList.isEmpty()) {
+            throw new Exception("등록된 수강생이 존재하지 않습니다. 수강생을 등록해주세요");
+        }
         for (Student student : studentList) {
             System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
         }
@@ -104,6 +116,36 @@ public class StudentManagement extends Management {
         /**
          * 단일 수강생 정보 조회 기능 구현
          */
+        boolean isEnded = false;
+        while (!isEnded) {
+            System.out.println("단일 수강생 조회 실행 중...");
+            // 전체 수강생 목록 출력
+            try {
+                findStudentList();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+
+            // 수강생 번호 입력
+            String studentId;
+            try {
+                studentId = getStudentId();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            // 수강생의 정보 출력
+            try {
+                findStudentInfo(studentId);
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            isEnded = goBack();
+        }
     }
 
     // 상태별 수강생 목록 조회
@@ -367,9 +409,9 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수강생의 과목 목록 출력(수강생이 존재하지 않으면 예외처리)
+     * 수강생 객체 반환
      */
-    public void findSubjectByStudent(String studentId) throws Exception {
+    private Student getStudent(String studentId) throws Exception {
         if (studentList.isEmpty()) {
             throw new Exception("존재하지 않는 수강생입니다.");
         }
@@ -377,6 +419,14 @@ public class StudentManagement extends Management {
         if (student == null) {
             throw new Exception("존재하지 않는 수강생입니다.");
         }
+        return student;
+    }
+
+    /**
+     * 수강생의 과목 목록 출력(수강생이 존재하지 않으면 예외처리)
+     */
+    public void findSubjectByStudent(String studentId) throws Exception {
+        Student student = getStudent(studentId);
         //과목 목록 출력
         for (Subject subject : student.getSubjects()) {
             System.out.print(subject.getSubjectId()+". ");
@@ -389,13 +439,22 @@ public class StudentManagement extends Management {
      * 수강하는 과목이 아니면 예외처리
      */
     public void isNotTakeASubject(String studentId, String subjectId) throws Exception {
-        Student student = studentList.stream().filter(f->studentId.equals(String.valueOf(f.getStudentId()))).findFirst().orElse(null);
-        if (student == null) {
-            throw new Exception("존재하지 않는 수강생입니다.");
-        }
+        Student student = getStudent(studentId);
         Subject subject = student.getSubjects().stream().filter(f->subjectId.equals(String.valueOf(f.getSubjectId()))).findFirst().orElse(null);
         if (subject == null) {
             throw new Exception("해당 학생이 수강하는 과목이 아닙니다.");
         }
+    }
+
+    /**
+     * 수강생 정보 출력
+     */
+    public void findStudentInfo(String studentId) throws Exception {
+        Student student = getStudent(studentId);
+        System.out.println("[번호] : " + student.getStudentId() + "번");
+        System.out.println("[이름] : " + student.getStudentName());
+        System.out.println("[상태] : " + student.getFeelingColor());
+        System.out.println("[과목 목록]");
+        findSubjectByStudent(studentId);
     }
 }

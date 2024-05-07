@@ -12,7 +12,6 @@ public class ScoreManagement extends Management {
     private static List<Score> scoreList = new ArrayList<>();
     private static StudentManagement studentManagement;
     private static List<Subject> subjectList;
-    private boolean testInit = true;
 
     // getter
     public static List<Score> getScoreList() {
@@ -72,54 +71,22 @@ public class ScoreManagement extends Management {
         this.subjectList = subjectList;
     }
 
-    /**
-     * 테스트 하려고 만든 코드(원지연)
-     */
-    public void testInitStudents() {
-        List<Student> students = new ArrayList<>();
-        List<Subject> subjects1 = new ArrayList<>();
-        subjects1.add(subjectList.get(0));
-        subjects1.add(subjectList.get(1));
-        subjects1.add(subjectList.get(2));
-        subjects1.add(subjectList.get(5));
-        subjects1.add(subjectList.get(6));
-        List<Subject> subjects2 = new ArrayList<>();
-        subjects2.add(subjectList.get(0));
-        subjects2.add(subjectList.get(3));
-        subjects2.add(subjectList.get(4));
-        subjects2.add(subjectList.get(7));
-        subjects2.add(subjectList.get(8));
-        List<Subject> subjects3 = new ArrayList<>();
-        subjects3.add(subjectList.get(0));
-        subjects3.add(subjectList.get(2));
-        subjects3.add(subjectList.get(3));
-        subjects3.add(subjectList.get(6));
-        subjects3.add(subjectList.get(7));
-
-        /**
-         * 상태 저장을 추가로 구현했는데 테스트 코드 등록에는 상태가 없어서 오류로 인한 주석처리
-          */
-
-//        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "원지연", subjects1));
-//        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "유동현", subjects2));
-//        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "조경민", subjects3));
-        studentManagement.setStudentList(students);
-    }
-
     // 수강생의 과목별 시험 회차 및 점수 등록
     private void addScore() {
 //        if (testInit) {
 //            testInitStudents(); // 테스트로 추가한 것
 //            testInit = false;
 //        }
-        if (studentManagement.getStudentList().isEmpty()) {
-            System.out.println("수강생이 없습니다. 수강생을 등록해 주세요.");
-            return;
-        }
         boolean isEnded = false;
         while (!isEnded) {
             // 수강생 전체 조회
-            studentManagement.inquiryAllStudentInfo();
+            try {
+                studentManagement.findStudentList();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+
             // 수강생 번호 입력
             String studentId;
             try {
@@ -217,7 +184,13 @@ public class ScoreManagement extends Management {
         boolean isEnded = false;
         while (!isEnded) {
             // 수강생 전체 조회
-            studentManagement.inquiryAllStudentInfo();
+            try {
+                studentManagement.findStudentList();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+
             // 수강생 번호 입력
             String studentId;
             try {
@@ -293,7 +266,13 @@ public class ScoreManagement extends Management {
         boolean isEnded = false;
         while (!isEnded) {
             // 수강생 전체 조회
-            studentManagement.inquiryAllStudentInfo();
+            try {
+                studentManagement.findStudentList();
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+
             // 수강생 번호 입력
             String studentId;
             try {
@@ -330,9 +309,9 @@ public class ScoreManagement extends Management {
                 continue;
             }
             isEnded = true;
+            System.out.println("등급 조회 성공");
+            System.out.println("점수 관리 화면으로 돌아갑니다.");
         }
-        System.out.println("등급 조회 성공");
-        System.out.println("점수 관리 화면으로 돌아갑니다.");
     }
 
 
@@ -340,14 +319,6 @@ public class ScoreManagement extends Management {
      *
      * 메서드 새로 구현
      */
-
-    // 수강생 번호 입력
-    private String getStudentId() throws Exception {
-        System.out.println("관리할 수강생의 번호를 입력해주세요.");
-        String studentId = sc.next();
-        isNumber(studentId);
-        return studentId;
-    }
 
     // 과목 번호 입력
     private String getSubjectId(String studentId) throws Exception {
