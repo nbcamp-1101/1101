@@ -5,7 +5,7 @@ import java.util.List;
 public class Student {
     private int studentId; // 수강생 고유 번호
     private String studentName; // 수강생 이름
-    private String feelingColor;
+    private String feelingColor;// 수강생의 상태
     private List<Subject> subjects; // 과목 목록
 
     public Student(int studentId, String studentName, String feelingColor, List<Subject> subjects) {
