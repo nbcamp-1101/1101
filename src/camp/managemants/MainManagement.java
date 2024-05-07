@@ -1,7 +1,10 @@
 package camp.managemants;
 
+import camp.model.Score;
+import camp.model.Student;
 import camp.model.Subject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,6 +18,7 @@ public class MainManagement extends Management {
 
     public void displayMain() {
         setInitData(); // 과목 데이터 생성
+        testDataInit(); // 테스트를 위한 수강생 3명 생성
         boolean isEnded = false;
         while (!isEnded) {
             System.out.println("-----------------------------------------------");
@@ -48,5 +52,45 @@ public class MainManagement extends Management {
                 new Subject(sequence(INDEX_TYPE_SUBJECT), "Redis", SUBJECT_TYPE_CHOICE),
                 new Subject(sequence(INDEX_TYPE_SUBJECT), "MongoDB", SUBJECT_TYPE_CHOICE)
         );
+    }
+
+    private void testDataInit() {
+        List<Student> students = new ArrayList<>();
+        List<Subject> subjects1 = new ArrayList<>();
+        subjects1.add(subjectList.get(0));
+        subjects1.add(subjectList.get(1));
+        subjects1.add(subjectList.get(2));
+        subjects1.add(subjectList.get(5));
+        subjects1.add(subjectList.get(6));
+        List<Subject> subjects2 = new ArrayList<>();
+        subjects2.add(subjectList.get(0));
+        subjects2.add(subjectList.get(3));
+        subjects2.add(subjectList.get(4));
+        subjects2.add(subjectList.get(7));
+        subjects2.add(subjectList.get(8));
+        List<Subject> subjects3 = new ArrayList<>();
+        subjects3.add(subjectList.get(0));
+        subjects3.add(subjectList.get(2));
+        subjects3.add(subjectList.get(3));
+        subjects3.add(subjectList.get(6));
+        subjects3.add(subjectList.get(7));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "짱구", GREEN, subjects1));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "철수", GREEN, subjects2));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "유리", GREEN, subjects3));
+
+        int[] scores = {98, 55, 87};
+        for (Student student : students) {
+            for (Subject subject : student.getSubjects()) {
+                for (int i = 1; i <= scores.length; i++) {
+                    try {
+                        scoreManagement.getScoreList().add(new Score(subject.getSubjectId(), student.getStudentId(), i, scores[i - 1], subject.getSubjectType()));
+                    } catch (Exception e) {
+                        System.out.println("\n\n테스트 데이터 삽입 실패\n\n");
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        studentManagement.setStudentList(students);
     }
 }
