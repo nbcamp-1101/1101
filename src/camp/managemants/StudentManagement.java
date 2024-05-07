@@ -164,7 +164,7 @@ public class StudentManagement extends Management {
 
             // 상태별 수강생 목록 출력
             try {
-                ouputStudentByFeelingColor(feelingColor);
+                outputStudentByFeelingColor(feelingColor);
             }catch (Exception e) {
                 System.out.println(e.getMessage());
                 break;
@@ -175,7 +175,7 @@ public class StudentManagement extends Management {
     }
 
     // 상태별 수강생 목록 출력
-    private void ouputStudentByFeelingColor(String feelingColor) throws Exception {
+    private void outputStudentByFeelingColor(String feelingColor) throws Exception {
         List<Student> students = getStudentByFeelingColor(feelingColor);
         for (Student student : students) {
             System.out.println(student.getStudentId() + ". " + student.getStudentName());
