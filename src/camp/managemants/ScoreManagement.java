@@ -19,10 +19,23 @@ public class ScoreManagement extends Management {
     private static List<Subject> subjectList;
 
     // getter
+
+    /**
+     * 점수 목록을 반환하는 메서드
+     * @return 점수 목록
+     */
     public static List<Score> getScoreList() {
         return scoreList;
     }
 
+    /**
+     * 점수 관리 화면
+     * <p>
+     *     점수 등록, 점수 수정, 점수 조회, 메인 화면으로 이동 동작을 선택할 수 있다.
+     * </p>
+     * @param studentManagement 수강생 관리 클래스
+     * @param subjectList 과목 목록
+     */
     public void displayScore(StudentManagement studentManagement, List<Subject> subjectList) {
         setInitData(studentManagement, subjectList);
         boolean isEnded = false;
@@ -47,6 +60,12 @@ public class ScoreManagement extends Management {
         }
     }
 
+    /**
+     * 점수 조회 화면
+     * <p>
+     *     회차별 등급 조회, 과목별 평균 등급 조회, 특정 상태 수강생의 필수 과목 등급 조회, 점수 관리 화면으로 이동 동작을 선택할 수 있다.
+     * </p>
+     */
     private void displayInquireScore() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -70,13 +89,19 @@ public class ScoreManagement extends Management {
         }
     }
 
-    // 데이터 초기화
+    /**
+     * 수강생 관리 클래스와 과목 목록 데이터를 초기화하는 메서드
+     * @param studentManagement 수강생 관리 클래스
+     * @param subjectList 과목 목록
+     */
     private void setInitData(StudentManagement studentManagement, List<Subject> subjectList) {
         this.studentManagement = studentManagement;
         this.subjectList = subjectList;
     }
 
-    // 수강생의 과목별 시험 회차 및 점수 등록
+    /**
+     * 수강생의 과목별 시험 회차 및 점수 등록
+     */
     private void addScore() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -180,11 +205,8 @@ public class ScoreManagement extends Management {
         }
     }
 
-    //
-
     /**
      * 수강생의 과목별 회차 점수 수정하는 메서드
-     * @author : 유동현
      */
     private void updateRoundScoreBySubject() {
         boolean isEnded = false;
@@ -267,7 +289,9 @@ public class ScoreManagement extends Management {
         }
     }
 
-    // 수강생의 특정 과목 회차별 등급 조회
+    /**
+     * 수강생의 특정 과목 회차별 등급 조회
+     */
     private void inquireRoundGradeBySubject() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -320,6 +344,9 @@ public class ScoreManagement extends Management {
         }
     }
 
+    /**
+     * 수강생의 과목별 평균 등급 조회
+     */
     private void inquireAverageGradeBySubjectForStudents() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -392,6 +419,9 @@ public class ScoreManagement extends Management {
         }
     }
 
+    /**
+     * 특정 상태 수강생들의 필수 과목 등급 조회
+     */
     private void inquireAverageGradeOfMandatorySubjectsForFeelingColor() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -442,11 +472,11 @@ public class ScoreManagement extends Management {
     }
 
     /**
-     *
-     * 메서드 새로 구현
+     * 과목 번호 입력 메서드
+     * @param studentId 수강생 번호
+     * @return 과목 번호
+     * @throws Exception 해당 수강생이 수강하는 과목이 아닐 경우
      */
-
-    // 과목 번호 입력
     private String getSubjectId(String studentId) throws Exception {
         System.out.println("\n과목 번호를 입력해주세요.");
         String subjectId = sc.next();
@@ -456,7 +486,14 @@ public class ScoreManagement extends Management {
         return subjectId;
     }
 
-    // 수강생의 특정 과목 점수 출력 및 점수 리스트 반환
+    /**
+     * 수강생의 특정 과목 점수 출력 및 점수 리스트 반환하는 메서드
+     * @param studentId 수강생 번호
+     * @param subjectId 과목 번호
+     * @return 수강생 번호와 과목 번호에 해당하는 점수 목록
+     * @throws Exception 점수 목록이 비어있는 경우,
+     *                   등록된 점수가 없는 경우
+     */
     private List<Score> inquireRoundScoreBySubject(String studentId, String subjectId) throws Exception {
         if (scoreList.isEmpty()) {
             throw new Exception("등록된 점수가 존재하지 않습니다.");
@@ -483,7 +520,14 @@ public class ScoreManagement extends Management {
         return scores;
     }
 
-    // 점수 수정
+    /**
+     * 점수 수정하는 메서드
+     * @param scores 점수 목록
+     * @param round 회차
+     * @param score 점수
+     * @return 수정 여부 boolean 값
+     * @throws Exception 해당 회차에 등록된 점슈가 없을 경우
+     */
     private boolean updateScore(List<Score> scores, String round, String score) throws Exception {
         Score scoreObj = scores.stream().filter(f->{
             if (round.equals(String.valueOf(f.getRound()))) {
@@ -501,7 +545,14 @@ public class ScoreManagement extends Management {
         return true;
     }
 
-    // 수정 여부 답변에 따라 수정 진행
+    /**
+     * 수정 여부 답변에 따라 수정 진행하는 메서드
+     * @param scores 점수 목록
+     * @param round 회차
+     * @param score 점수
+     * @return 수정 여부 boolean 값
+     * @throws Exception 수정 여부 답변이 잘못된 입력일 경우
+     */
     private boolean updateProc(List<Score> scores, String round, String score) throws Exception {
         boolean isEnded = false;
         String answer;
