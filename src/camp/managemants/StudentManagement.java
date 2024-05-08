@@ -10,7 +10,10 @@ public class StudentManagement extends Management {
     private static List<Student> studentList = new ArrayList<>();
     private static List<Subject> subjectList;
 
-    //getter
+    /**
+     * 수강생 목록을 반환하는 메서드
+     * @return 수강생 목록
+     */
     public List<Student> getStudentList() {
         return studentList;
     }
@@ -22,11 +25,21 @@ public class StudentManagement extends Management {
         StudentManagement.studentList = studentList;
     }
 
-    // 데이터 초기화
+    /**
+     * 과목 목록 데이터를 초기화
+     * @param subjectList 과목 목록
+     */
     private void setInitData(List<Subject> subjectList) {
         this.subjectList = subjectList;
     }
 
+    /**
+     * 수강생 관리 화면
+     * <p>
+     *     수강생 등록, 수강생 정보 수정, 수강생 정보 조회, 수강생 정보 삭제, 메인 화면으로 이동 등의 동작을 선택할 수 있다.
+     * </p>
+     * @param subjectList 과목 목록
+     */
     public void displayStudent(List<Subject> subjectList) {
         setInitData(subjectList);
         boolean isEnded = false;
@@ -53,7 +66,12 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 수강생 목록 조회 디스플레이
+    /**
+     * 수갈생 조회 화면
+     * <p>
+     *     전체 수강생 조회, 단일 수강생 조회, 상태별 수강생 조회, 수강생 관리 화면으로 이동 등의 동작을 선택할 수 있다.
+     * </p>
+     */
     private void displayInquiryStudent() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -77,7 +95,9 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 전체 수강생 목록 조회
+    /**
+     * 전체 수강생 목록 조회하는 메서드
+     */
     public void inquiryAllStudentInfo() {
         try {
             findStudentList();
@@ -86,7 +106,10 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 전체 수강생 목록 조회
+    /**
+     * 수강생 목록을 출력하는 메서드
+     * @throws Exception 수강생 목록이 비어있는 경우
+     */
     public void findStudentList() throws Exception {
         if (studentList.isEmpty()) {
             throw new Exception("등록된 수강생이 존재하지 않습니다. 수강생을 등록해주세요");
@@ -110,7 +133,9 @@ public class StudentManagement extends Management {
          */
     }
 
-    // 단일 수강생 정보 조회
+    /**
+     * 단일 수강생 정보 조회 메서드
+     */
     private void inquirySingleStudentInfo() {
         boolean isEnded = false;
         while (!isEnded) {
@@ -144,11 +169,10 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 상태별 수강생 목록 조회
+    /**
+     * 상태별 수강생 목록 조회 메서드
+     */
     private void inquiryFeelingColorStudentInfo() {
-        /**
-         * 상태별 수강생 정보 조회 기능 구현
-         */
         boolean isEnded = false;
         while (!isEnded) {
             System.out.println("상태별 수강생 목록 조회 실행 중...");
@@ -173,7 +197,12 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 상태별 수강생 목록 출력
+    /**
+     * 상태별 수강생 목록 출력하는 메서드
+     * @param feelingColor 수강생 상태
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   입력한 상태의 수강생이 없는 경우
+     */
     private void outputStudentByFeelingColor(String feelingColor) throws Exception {
         List<Student> students = getStudentByFeelingColor(feelingColor);
         for (Student student : students) {
@@ -181,7 +210,13 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 특정 상태 수강생 목록 반환
+    /**
+     * 특정 상태 수강생 목록을 반환하는 메서드
+     * @param feelingColor 수강생 상태
+     * @return 특정 상태의 수강생 목록
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   입력한 상태의 수강생이 없는 경우
+     */
     public List<Student> getStudentByFeelingColor(String feelingColor) throws Exception {
         if (studentList.isEmpty()) {
             throw new Exception("등록된 수강생이 존재하지 않습니다. 수강생을 등록해주세요");
@@ -401,7 +436,11 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수강생 객체 반환
+     * 수강생 번호에 해당하는 수강생 객체 반환하는 메서드
+     * @param studentId 수강생 번호
+     * @return 수강생 객체
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   번호에 해당하는 수강생이 없는 경우
      */
     private Student getStudent(String studentId) throws Exception {
         if (studentList.isEmpty()) {
@@ -415,7 +454,10 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수강생의 과목 목록 출력(수강생이 존재하지 않으면 예외처리)
+     * 수강생의 과목 목록 출력하는 메서드
+     * @param studentId 수강생 번호
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   번호에 해당하는 수강생이 없는 경우
      */
     public void findSubjectByStudent(String studentId) throws Exception {
         Student student = getStudent(studentId);
@@ -428,7 +470,12 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수강하는 과목이 아니면 예외처리
+     * 수강생이 수강하는 과목인지 판단하는 메서드
+     * @param studentId 수강생 번호
+     * @param subjectId 과목 번호
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   수강생 번호에 해당하는 수강생이 없는 경우,
+     *                   과목 번호에 해당하는 과목을 수강생이 수강하지 않는 경우
      */
     public void isNotTakeASubject(String studentId, String subjectId) throws Exception {
         Student student = getStudent(studentId);
@@ -440,6 +487,13 @@ public class StudentManagement extends Management {
 
     /**
      * 수강생 정보 출력
+     */
+    /**
+     *
+     * @param studentId 수강생 번호
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   수강생 번호에 해당하는 수강생이 없는 경우,
+     *                   과목 번호에 해당하는 과목을 수강생이 수강하지 않는 경우
      */
     public void findStudentInfo(String studentId) throws Exception {
         Student student = getStudent(studentId);

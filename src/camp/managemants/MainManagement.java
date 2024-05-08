@@ -15,6 +15,12 @@ public class MainManagement extends Management {
     private static final StudentManagement studentManagement = new StudentManagement();
     private static final ScoreManagement scoreManagement = new ScoreManagement();
 
+    /**
+     * 메인 화면
+     * <p>
+     *     수강생 관리, 점수 관리, 프로그램 종료 동작을 선택할 수 있다.
+     * </p>
+     */
     public void displayMain() {
         setInitData(); // 과목 데이터 생성
         testDataInit(); // 테스트를 위한 수강생 3명 생성
@@ -38,7 +44,9 @@ public class MainManagement extends Management {
         }
     }
 
-    // 과목 데이터 생성
+    /**
+     * 애플리케이션 시작 시 과목 데이터를 생성하는 메서드
+     */
     private void setInitData() {
         subjectList = List.of(
                 new Subject(sequence(INDEX_TYPE_SUBJECT), "Java", SUBJECT_TYPE_MANDATORY),
@@ -53,6 +61,9 @@ public class MainManagement extends Management {
         );
     }
 
+    /**
+     * 테스트를 위한 데이터 생성하는 메서드
+     */
     private void testDataInit() {
         List<Student> students = new ArrayList<>();
         List<Subject> subjects1 = new ArrayList<>();

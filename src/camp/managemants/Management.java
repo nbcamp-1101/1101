@@ -40,12 +40,18 @@ public class Management {
         }
     }
 
-    // 뒤로 이동
+    /**
+     * @return true
+     */
     public boolean goBack() {
         return true;
     }
 
-    // 숫자인지 판단
+    /**
+     * 숫자인지 판단하는 메서드
+     * @param number 수강생 번호
+     * @throws Exception 숫자가 아닐 경우
+     */
     public void isNumber(String number) throws Exception {
         if (!Pattern.matches("^[0-9]*$", number)) {
             throw new Exception("숫자를 입력해주세요. 처음으로 돌아갑니다.");
@@ -59,7 +65,13 @@ public class Management {
         }
     }
 
-    // 회차, 점수 범위 벗어나는지 판단
+    /**
+     * 회차, 점수 범위 벗어나는지 판단하는 메서드
+     * @param num 번호
+     * @param type 번호의 타입(회차, 점수)
+     * @throws Exception 타입이 "round"일때 범위(1~10)를 벗어나는 경우,
+     *                   타입이 "score"일때 범위(0~100)를 벗어나는 경우
+     */
     public void isValid(String num, String type) throws Exception {
         if ("round".equals(type)) {
             if (Integer.parseInt(num) <= 0 || Integer.parseInt(num) > 10) {
@@ -72,7 +84,11 @@ public class Management {
         }
     }
 
-    // 수강생 번호 입력
+    /**
+     * 수강생 번호를 입력하는 메서드
+     * @return 수강생 번호
+     * @throws Exception
+     */
     public String getStudentId() throws Exception {
         System.out.println("관리할 수강생의 번호를 입력해주세요.");
         String studentId = sc.next();
@@ -80,7 +96,11 @@ public class Management {
         return studentId;
     }
 
-    // 상태 종류 출력 및 상태 입력
+    /**
+     * 상태 종류 출력 및 상태 입력하는 메서드
+     * @return 수강생의 상태
+     * @throws Exception 번호 입력이 지정된 범위를 벗어날 경우
+     */
     public String getFeelingColor() throws Exception {
         String[] feelingColor = {GREEN, YELLOW, RED};
         System.out.println("1. 좋음 : Green ");
