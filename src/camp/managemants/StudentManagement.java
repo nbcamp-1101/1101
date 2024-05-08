@@ -297,17 +297,17 @@ public class StudentManagement extends Management {
             String studentName; // 저장해야할 수강생 이름
             String studentFeelingColor; // 저장해야할 수강생 상태
 
-            // 갇히는 문제와 스테이지별 다시하기 기능
+            // 끝내기 전까지 갇히는 문제와 스테이지별 다시하기 기능
             try {
                 // 수강생 이름 등록
                 studentName = inputStudentName();
 
                 // 필수과목 신청
-                List<Subject> mandatorySubjects = SelectSubject(SUBJECT_TYPE_MANDATORY);
+                List<Subject> mandatorySubjects = selectSubject(SUBJECT_TYPE_MANDATORY);
                 subjects.addAll(mandatorySubjects);
 
                 // 선택과목 신청
-                List<Subject> choiceSubjects = SelectSubject(SUBJECT_TYPE_CHOICE);
+                List<Subject> choiceSubjects = selectSubject(SUBJECT_TYPE_CHOICE);
                 subjects.addAll(choiceSubjects);
 
                 // 수강생 상태 선택
@@ -381,7 +381,7 @@ public class StudentManagement extends Management {
      *                     숫자 이외의 정보가 입력된 경우,
      *                     과목 선택 조건을 충족하지 않은 경우
      */
-    private List<Subject> SelectSubject(String type) throws Exception {
+    private List<Subject> selectSubject(String type) throws Exception {
 
         List<Subject> selectedSubjects = new ArrayList<>(); // 과목 선택을 저장할 리스트 선언
 
@@ -391,19 +391,12 @@ public class StudentManagement extends Management {
             System.out.println("\n수강신청한 선택과목 번호를 전부 입력하세요 (2개 이상 ex. 6,7)\n");
         }
 
-        List<String> inputSelectSubject;
-        try {
-            viewSubject(type); // 선택할 과목 목록 조회
-            System.out.print("\n입력 : ");
-            String selectSubject = sc.next();
+        viewSubject(type); // 선택할 과목 목록 조회
+        System.out.print("\n입력 : ");
+        String selectSubject = sc.next();
 
-            // 쉼표로 구분된 값을 리스트로 변환
-            inputSelectSubject = Arrays.asList(selectSubject.split(","));
-
-        } catch (Exception e) {
-            throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
-                    + "\n처음으로 돌아갑니다.\n");
-        }
+        // 쉼표로 구분된 값을 리스트로 변환
+        List<String> inputSelectSubject = Arrays.asList(selectSubject.split(","));
 
         // 입력된 번호가 유효한지 확인하고 저장
         inputSelectSubject = validateInput(type, inputSelectSubject);
@@ -443,7 +436,8 @@ public class StudentManagement extends Management {
      * @param type : 과목 타입
      * @param inputSelectSubject : 사용에게 입력받은 수강 신청 과목 번호
      * @return : 입력값과 동일한 번호를 가지고 타입이 일치하는 과목들의 고유번호만 오름차순으로 정렬 후 리스트 반환
-     * @throws Exception : 숫자 이외의 값이 입력된 경우
+     * @throws Exception : 숫자 이외의 값이 입력된 경우,
+     *                     null 값이 입력된 경우(ex. 1,2,,,,,7,8,9)
      */
     private List<String> validateInput(String type, List<String> inputSelectSubject) throws Exception {
         // 중복제거
@@ -452,7 +446,12 @@ public class StudentManagement extends Management {
 
         // 숫자 유효성 확인
         for (String s : validatedInput) {
-            isNumber(s);
+            if (s.isEmpty()) {
+                throw new Exception("\n입력이 잘못 되었습니다. 숫자와 콤마(,) 로 구분해 입력해주세요. ex) 1,2,3,4"
+                        + "\n처음으로 돌아갑니다.\n");
+            } else {
+                isNumber(s);
+            }
         }
 
         return validatedInput.stream()
