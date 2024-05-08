@@ -119,16 +119,41 @@ public class StudentManagement extends Management {
         }
     }
 
-    // 수강생 정보 삭제
+    /**
+     * 수강생 정보를 삭제하는 메서드
+     * 실제 삭제 동작은 deleteStudent()에 위임
+     */
     private void removeStudentInfo() {
-        /**
-         * 수강생 정보 삭제 기능 구현
-         */
+        try {
+            // 수강생 번호 입력
+            String studentId = getStudentId();
+
+            // 수강생 삭제 확인
+            System.out.println("수강생 정보를 삭제하시겠습니까? (Y/N)");
+            String confirm = sc.next();
+            if ("Y".equalsIgnoreCase(confirm)) {
+                // 수강생 정보 삭제 처리
+                deleteStudent(studentId);
+                System.out.println("수강생 정보가 삭제되었습니다.");
+            } else {
+                System.out.println("수강생 정보 삭제를 취소하셨습니다.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * 수강생 정보를 실제로 삭제하는 메서드
+     */
+    private void deleteStudent(String studentId) throws Exception {
+        Student student = getStudent(studentId);
+        studentList.remove(student); // 리스트에서 해당 수강생 제거
     }
 
     // 수강생 정보 수정
     private void modifyStudentInfo() {
-        /**
+        /*
          * 수강생 정보 수정 기능 구현
          */
     }
