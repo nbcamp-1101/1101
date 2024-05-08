@@ -546,6 +546,13 @@ public class ScoreManagement extends Management {
     }
 
     /**
+     * 점수를 삭제하는 메서드
+     */
+    public void deleteScore(String studentId){
+        scoreList.removeIf(score -> String.valueOf(score.getStudentId()).equals(studentId));
+    }
+
+    /**
      * 수정 여부 답변에 따라 수정 진행하는 메서드
      * @param scores 점수 목록
      * @param round 회차

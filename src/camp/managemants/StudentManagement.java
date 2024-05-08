@@ -1,5 +1,6 @@
 package camp.managemants;
 
+import camp.model.Score;
 import camp.model.Student;
 import camp.model.Subject;
 import java.util.*;
@@ -9,6 +10,9 @@ public class StudentManagement extends Management {
     // 데이터 저장소
     private static List<Student> studentList = new ArrayList<>();
     private static List<Subject> subjectList;
+
+
+
 
     /**
      * 수강생 목록을 반환하는 메서드
@@ -39,8 +43,9 @@ public class StudentManagement extends Management {
      *     수강생 등록, 수강생 정보 수정, 수강생 정보 조회, 수강생 정보 삭제, 메인 화면으로 이동 등의 동작을 선택할 수 있다.
      * </p>
      * @param subjectList 과목 목록
-     */
-    public void displayStudent(List<Subject> subjectList) {
+     *        scoreList 점수목록
+     */ //
+    public void displayStudent(List<Subject> subjectList,ScoreManagement scoreManagement) {
         setInitData(subjectList);
         boolean isEnded = false;
         while (!isEnded) {
@@ -57,7 +62,7 @@ public class StudentManagement extends Management {
                 case "1" -> addStudentInfo(); // 수강생 등록
                 case "2" -> modifyStudentInfo(); // 수강생 수정
                 case "3" -> displayInquiryStudent(); // 수강생 조회 디스플레이
-                case "4" -> removeStudentInfo(); // 수강생 정보 삭제
+                case "4" -> removeStudentInfo(scoreManagement); // 수강생 정보 삭제
                 case "5" -> isEnded = goBack(); // 메인화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
@@ -121,9 +126,9 @@ public class StudentManagement extends Management {
 
     /**
      * 수강생 정보를 삭제하는 메서드
-     * 실제 삭제 동작은 deleteStudent()에 위임
+     * 실제 삭제 동작은 deleteStudentInfo()에 위임
      */
-    private void removeStudentInfo() {
+    private void removeStudentInfo(ScoreManagement scoreManagement) {
         try {
             // 수강생 번호 입력
             String studentId = getStudentId();
@@ -133,7 +138,7 @@ public class StudentManagement extends Management {
             String confirm = sc.next();
             if ("Y".equalsIgnoreCase(confirm)) {
                 // 수강생 정보 삭제 처리
-                deleteStudent(studentId);
+                deleteStudentInfo(studentId, scoreManagement);
                 System.out.println("수강생 정보가 삭제되었습니다.");
             } else {
                 System.out.println("수강생 정보 삭제를 취소하셨습니다.");
@@ -144,12 +149,15 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수강생 정보를 실제로 삭제하는 메서드
+     * 수강생 정보(학생 모델 및 점수)를 실제로 삭제하는 동작을 수행하는 메서드
      */
-    private void deleteStudent(String studentId) throws Exception {
+    private void deleteStudentInfo(String studentId, ScoreManagement scoreManagement) throws Exception {
         Student student = getStudent(studentId);
-        studentList.remove(student); // 리스트에서 해당 수강생 제거
+        studentList.remove(student); // 학생리스트에서 해당 수강생 제거
+        scoreManagement.deleteScore(studentId); // 점수리스트에서 해당 수강생 제거
+//        System.out.println(scoreManagement.getScoreList()); // test
     }
+
 
     // 수강생 정보 수정
     private void modifyStudentInfo() {
