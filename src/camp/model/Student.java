@@ -30,4 +30,12 @@ public class Student {
     public String getFeelingColor() {
         return feelingColor;
     }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public void setFeelingColor(String feelingColor) {
+        this.feelingColor = feelingColor;
+    }
 }
