@@ -105,6 +105,34 @@ public class Management {
     }
 
     /**
+     * 회차를 입력하는 메서드
+     * @return 회차
+     * @throws Exception 숫자가 아닌 경우,
+     *                   범위(1~10)를 벗어나는 경우,
+     */
+    public String getRound() throws Exception {
+        System.out.println("회차를 입력해주세요.");
+        String round = sc.next();
+        isNumber(round);
+        isValid(round, "round");
+        return round;
+    }
+
+    /**
+     * 점수를 입력하는 메서드
+     * @return 점수
+     * @throws Exception 숫자가 아닌 경우,
+     *                   범위(0~100)를 벗어나는 경우
+     */
+    public String getScore() throws Exception {
+        System.out.println("수정할 점수를 입력해주세요. (0~100)");
+        String score = sc.next();
+        isNumber(score);
+        isValid(score, "score");
+        return score;
+    }
+
+    /**
      * 상태 종류 출력 및 상태 입력하는 메서드
      * @return 수강생의 상태
      * @throws Exception 번호 입력이 지정된 범위를 벗어날 경우

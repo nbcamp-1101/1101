@@ -125,8 +125,14 @@ public class StudentManagement extends Management {
     }
 
     /**
+     *
+     */
+    /**
      * 수강생 정보를 삭제하는 메서드
-     * 실제 삭제 동작은 deleteStudentInfo()에 위임
+     * <p>
+     *     실제 삭제 동작은 deleteStudentInfo()에 위임
+     * </p>
+     * @param scoreManagement 점수 관리 클래스
      */
     private void removeStudentInfo(ScoreManagement scoreManagement) {
         try {
@@ -151,16 +157,23 @@ public class StudentManagement extends Management {
 
     /**
      * 수강생 정보(학생 모델 및 점수)를 실제로 삭제하는 동작을 수행하는 메서드
+     * @param studentId 수강생 번호
+     * @param scoreManagement 점수 관리 클래스
+     * @throws Exception 수강생 목록이 비어있는 경우,
+     *                   번호에 해당하는 수강생이 없는 경우
      */
     private void deleteStudentInfo(String studentId, ScoreManagement scoreManagement) throws Exception {
         Student student = getStudent(studentId);
         studentList.remove(student); // 학생리스트에서 해당 수강생 제거
         scoreManagement.deleteScore(studentId); // 점수리스트에서 해당 수강생 제거
-//        System.out.println(scoreManagement.getScoreList()); // test
     }
 
-
-    // 수강생 정보 수정
+    /**
+     * 수강생 정보 수정하는 메서드
+     * <p>
+     *     이름 수정, 상태 수정, 이름/상태 수정 동작을 선택할 수 있다.
+     * </p>
+     */
     private void modifyStudentInfo() {
         sc.nextLine();
         System.out.println("-----------------------------------------------");
@@ -232,25 +245,18 @@ public class StudentManagement extends Management {
         boolean isEnded = false;
         while (!isEnded) {
             System.out.println("단일 수강생 조회 실행 중...");
-            // 전체 수강생 목록 출력
             try {
+                // 전체 수강생 목록 출력
                 findStudentList();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 break;
             }
 
-            // 수강생 번호 입력
-            String studentId;
             try {
-                studentId = getStudentId();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 수강생의 정보 출력
-            try {
+                // 수강생 번호 입력
+                String studentId = getStudentId();
+                // 수강생의 정보 출력
                 findStudentInfo(studentId);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -279,6 +285,7 @@ public class StudentManagement extends Management {
 
             // 상태별 수강생 목록 출력
             try {
+                System.out.println("[" + feelingColor + "]");
                 outputStudentByFeelingColor(feelingColor);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -298,7 +305,7 @@ public class StudentManagement extends Management {
     private void outputStudentByFeelingColor(String feelingColor) throws Exception {
         List<Student> students = getStudentByFeelingColor(feelingColor);
         for (Student student : students) {
-            System.out.println(student.getStudentId() + ". " + student.getStudentName());
+            System.out.println("번호 : " + student.getStudentId() + ", 이름 : " + student.getStudentName());
         }
     }
 
