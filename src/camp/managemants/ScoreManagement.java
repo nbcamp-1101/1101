@@ -3,8 +3,13 @@ package camp.managemants;
 import camp.model.Score;
 import camp.model.Student;
 import camp.model.Subject;
+import com.sun.source.tree.IfTree;
 
+import javax.imageio.metadata.IIOMetadataFormatImpl;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ScoreManagement extends Management {
 
@@ -56,7 +61,7 @@ public class ScoreManagement extends Management {
             switch (input) {
                 case "1" -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
                 case "2" -> inquireAverageGradeBySubjectForStudents(); // 수강생의 과목별 평균 등급 조회
-//                case "3" -> ?(); // 특정 상태 수강생들의 필수 과목 등급 조회
+                case "3" -> inquireAverageGradeOfMandatorySubjectsForFeelingColor(); // 특정 상태 수강생들의 필수 과목 등급 조회
                 case "4" -> isEnded = goBack(); // 점수 관리 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
@@ -380,6 +385,55 @@ public class ScoreManagement extends Management {
             System.out.println("점수 관리 화면으로 돌아갑니다.");
             isEnded = true;
         }
+    }
+
+    private void inquireAverageGradeOfMandatorySubjectsForFeelingColor() {
+        boolean isEnded = false;
+        while (!isEnded) {
+            String feelingColor;
+            try {
+                feelingColor = getFeelingColor();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            Score tempScore = new Score();
+            List<Student> studentByFeelingColor;
+            try {
+                studentByFeelingColor = studentManagement.getStudentByFeelingColor(feelingColor);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+
+            for (Student student : studentByFeelingColor) {
+                int averageScore = (int) scoreList.stream()
+                        .filter(score -> score.getStudentId() == student.getStudentId() && isMandatorySubject(score.getSubjectId()))
+                        .mapToInt(Score::getScore)
+                        .average().orElse(0);
+
+                String subjectsString = student.getSubjects().stream()
+                        .filter(subject -> isMandatorySubject(subject.getSubjectId()))
+                        .map(Subject::getSubjectName)
+                        .collect(Collectors.joining(", ", "[ ", " ]"));
+                String averageGrade;
+                try {
+                    averageGrade = tempScore.scoreToGrade(averageScore, SUBJECT_TYPE_MANDATORY);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                System.out.println(student.getStudentName() + "님의 필수과목 " + subjectsString + "의 평균: "
+                        + averageScore + "점(" + averageGrade + ")");
+            }
+
+            System.out.println("점수 관리 화면으로 돌아갑니다.");
+            isEnded = true;
+        }
+    }
+    public boolean isMandatorySubject(int subjectId) {
+        return subjectList.get(subjectId - 1).getSubjectType().equals(SUBJECT_TYPE_MANDATORY);
     }
 
     /**
