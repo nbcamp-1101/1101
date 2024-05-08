@@ -40,15 +40,23 @@ public class Score {
         return grade;
     }
 
-    // 점수 수정
+    /**
+     * 점수, 등급 수정
+     * @param score 점수
+     * @param subjectType 과목 타입(필수. 선택)
+     * @throws Exception 점수를 등급으로 변환할때 오류가 생길 경우
+     */
     public void updateScoreAndGrade(int score, String subjectType) throws Exception {
         this.score = score;
         this.grade = scoreToGrade(score, subjectType);
     }
 
     /**
-     * subjectId 로 필수인지 선택이지 확인하고
-     * 점수를 등급으로 변환
+     * 점수를 등급으로 변환하는 메서드
+     * @param score 점수
+     * @param subjectType 과목 타입(필수. 선택)
+     * @return
+     * @throws Exception 점수를 등급으로 변환할때 오류가 생길 경우
      */
     public String scoreToGrade(int score, String subjectType) throws Exception {
         String grade;
