@@ -486,9 +486,6 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수강생 정보 출력
-     */
-    /**
      *
      * @param studentId 수강생 번호
      * @throws Exception 수강생 목록이 비어있는 경우,

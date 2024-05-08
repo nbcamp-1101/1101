@@ -22,7 +22,11 @@ public class Management {
     // 스캐너
     public static Scanner sc = new Scanner(System.in);
 
-    // index 자동 증가
+    /**
+     * index 자동 증가해주는 메서드
+     * @param type 인덱스 타입(과목, 학생, 점수)
+     * @return 자동 증가된 인덱스 값
+     */
     public static int sequence(String type) {
         switch (type) {
             case INDEX_TYPE_STUDENT -> {
@@ -58,7 +62,11 @@ public class Management {
         }
     }
 
-    // 이름 유효성 판단
+    /**
+     * 이름 유효성 판단하는 메서드
+     * @param text 수강생 이름
+     * @throws Exception 이름의 입력이 한글이나 영어가 아닌 경우
+     */
     public void isText(String text) throws Exception {
         if (!Pattern.matches("^[가-힣a-zA-Z]+$", text)) {
             throw new Exception("\n제대로된 한글이나 영어로 이름을 입력해주세요. 처음으로 돌아갑니다.\n");
