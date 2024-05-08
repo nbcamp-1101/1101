@@ -18,8 +18,6 @@ public class ScoreManagement extends Management {
     private static StudentManagement studentManagement;
     private static List<Subject> subjectList;
 
-    // getter
-
     /**
      * 점수 목록을 반환하는 메서드
      * @return 점수 목록
@@ -211,76 +209,28 @@ public class ScoreManagement extends Management {
     private void updateRoundScoreBySubject() {
         boolean isEnded = false;
         while (!isEnded) {
-            // 수강생 전체 조회
             try {
+                // 수강생 전체 조회
                 studentManagement.findStudentList();
             }catch (Exception e) {
                 System.out.println(e.getMessage());
                 break;
             }
 
-            // 수강생 번호 입력
-            String studentId;
             try {
-                studentId = getStudentId();
-            }catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 수강생의 과목 목록 출력
-            try {
+                // 수강생 번호 입력
+                String studentId = getStudentId();
                 //수강생의 과목 목록 출력
                 studentManagement.findSubjectByStudent(studentId);
-            }catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 과목 번호 입력
-            String subjectId;
-            try {
-                subjectId = getSubjectId(studentId);
-            }catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 과목의 전 회차 점수 출력
-            List<Score> scores;
-            try {
-                scores = inquireRoundScoreBySubject(studentId, subjectId);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 회차 입력
-            String round;
-            try {
-                System.out.println("회차를 입력해주세요.");
-                round = sc.next();
-                isNumber(round);
-                isValid(round, "round");
-            }catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 점수 입력
-            String score;
-            try {
-                System.out.println("수정할 점수를 입력해주세요. (0~100)");
-                score = sc.next();
-                isNumber(score);
-                isValid(score, "score");
-            }catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-
-            // 수정
-            try {
+                // 과목 번호 입력
+                String subjectId = getSubjectId(studentId);
+                // 과목의 전 회차 점수 출력
+                List<Score> scores = inquireRoundScoreBySubject(studentId, subjectId);
+                // 회차 입력
+                String round = getRound();
+                // 점수 입력
+                String score = getScore();
+                // 수정
                 isEnded = updateProc(scores, round, score);
             }catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -547,6 +497,7 @@ public class ScoreManagement extends Management {
 
     /**
      * 점수를 삭제하는 메서드
+     * @param studentId 수강생 번호
      */
     public void deleteScore(String studentId){
         scoreList.removeIf(score -> String.valueOf(score.getStudentId()).equals(studentId));
