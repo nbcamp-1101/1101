@@ -277,6 +277,8 @@ public class StudentManagement extends Management {
     /**
      * 수강생 이름 입력 확인
      * @return : 입력받은 수강생 이름
+     * @throws Exception : 수강생 이름이 한글이나 영어로 입력되지 않은 경우,
+     *                     입력을 취소한 경우
      */
     private String inputStudentName() throws Exception {
         System.out.println("수강생 등록 실행 중...");
@@ -317,12 +319,14 @@ public class StudentManagement extends Management {
      * 과목 선택 저장
      * @param type : 과목 타입
      * @return : 신청한 과목의 정보 리스트
+     * @throws Exception : 숫자와 콤마로 구분해서 입력하지 않은 경우,
+     *                     숫자 이외의 정보가 입력된 경우,
+     *                     과목 선택 조건을 충족하지 않은 경우
      */
     private List<Subject> SelectSubject(String type) throws Exception {
 
         List<Subject> selectedSubjects = new ArrayList<>(); // 과목 선택을 저장할 리스트 선언
 
-        // 타입에 맞춰 문구 출력
         if (SUBJECT_TYPE_MANDATORY.equals(type)) {
             System.out.println("\n수강신청한 필수과목 번호를 전부 입력하세요 (3개 이상 ex. 1,2,3)\n");
         } else {
@@ -347,7 +351,7 @@ public class StudentManagement extends Management {
         inputSelectSubject = validateInput(type, inputSelectSubject);
 
         // 필수과목은 3개 이상, 선택과목은 2개 이상을 선택했는지 확인
-        // (유지보수를 위해 요구 조건인 3과 2를 상수로 선언하는 것이 좋은가?)-----------------
+        // (유지보수를 위해 요구 조건인 3과 2를 상수로 선언하는 것이 좋은가?)
         if ((type.equals(SUBJECT_TYPE_MANDATORY) && inputSelectSubject.size() < 3) ||
                 (type.equals(SUBJECT_TYPE_CHOICE) && inputSelectSubject.size() < 2)) {
             throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +
@@ -381,10 +385,11 @@ public class StudentManagement extends Management {
      * @param type : 과목 타입
      * @param inputSelectSubject : 사용에게 입력받은 수강 신청 과목 번호
      * @return : 입력값과 동일한 번호를 가지고 타입이 일치하는 과목들의 고유번호만 오름차순으로 정렬 후 리스트 반환
+     * @throws Exception : 숫자 이외의 값이 입력된 경우
      */
     private List<String> validateInput(String type, List<String> inputSelectSubject) throws Exception {
         // 중복제거
-        Set<String> removeDuplicates= new HashSet<>(inputSelectSubject);
+        Set<String> removeDuplicates = new HashSet<>(inputSelectSubject);
         List<String> validatedInput = new ArrayList<>(removeDuplicates);
 
         // 숫자 유효성 확인
@@ -405,6 +410,7 @@ public class StudentManagement extends Management {
      * @param subjects : 수강생의 신청 과목 정보
      * @param studentName : 수강생 이름
      * @param studentFeelingColor : 수강생 상태
+     * @throws Exception : 선택을 취소하는 경우
      */
     private void finalCheckStudentInfo(List<Subject> subjects, String studentName, String studentFeelingColor) throws Exception {
         for (Subject subject : subjects) {
