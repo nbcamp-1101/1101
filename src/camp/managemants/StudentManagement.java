@@ -154,6 +154,15 @@ public class StudentManagement extends Management {
     }
 
     /**
+     * 수강생 정보를 실제로 삭제하는 메서드
+     */
+    private void deleteStudent(String studentId) throws Exception {
+        Student student = getStudent(studentId);
+        studentList.remove(student); // 리스트에서 해당 수강생 제거
+
+    }
+
+    /**
      * 수강생 정보(학생 모델 및 점수)를 실제로 삭제하는 동작을 수행하는 메서드
      */
     private void deleteStudentInfo(String studentId, ScoreManagement scoreManagement) throws Exception {
