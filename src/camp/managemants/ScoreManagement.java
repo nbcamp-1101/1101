@@ -175,7 +175,12 @@ public class ScoreManagement extends Management {
         }
     }
 
-    // 수강생의 과목별 회차 점수 수정
+    //
+
+    /**
+     * 수강생의 과목별 회차 점수 수정하는 메서드
+     * @author : 유동현
+     */
     private void updateRoundScoreBySubject() {
         boolean isEnded = false;
         while (!isEnded) {
