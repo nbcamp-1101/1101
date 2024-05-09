@@ -11,9 +11,6 @@ public class StudentManagement extends Management {
     private static List<Student> studentList = new ArrayList<>();
     private static List<Subject> subjectList;
 
-
-
-
     /**
      * 수강생 목록을 반환하는 메서드
      * @return 수강생 목록
@@ -454,7 +451,6 @@ public class StudentManagement extends Management {
         inputSelectSubject = validateInput(type, inputSelectSubject);
 
         // 필수과목은 3개 이상, 선택과목은 2개 이상을 선택했는지 확인
-        // (유지보수를 위해 요구 조건인 3과 2를 상수로 선언하는 것이 좋은가?)
         if ((type.equals(SUBJECT_TYPE_MANDATORY) && inputSelectSubject.size() < 3) ||
                 (type.equals(SUBJECT_TYPE_CHOICE) && inputSelectSubject.size() < 2)) {
             throw new Exception("\n입력값이 선택과목 조건에 맞지 않습니다." +

@@ -6,6 +6,7 @@ import camp.model.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainManagement extends Management {
     // 과목 데이터
@@ -71,29 +72,54 @@ public class MainManagement extends Management {
         subjects1.add(subjectList.get(1));
         subjects1.add(subjectList.get(2));
         subjects1.add(subjectList.get(5));
-        subjects1.add(subjectList.get(6));
+        subjects1.add(subjectList.get(7));
         List<Subject> subjects2 = new ArrayList<>();
         subjects2.add(subjectList.get(0));
+        subjects2.add(subjectList.get(2));
         subjects2.add(subjectList.get(3));
         subjects2.add(subjectList.get(4));
         subjects2.add(subjectList.get(7));
         subjects2.add(subjectList.get(8));
         List<Subject> subjects3 = new ArrayList<>();
         subjects3.add(subjectList.get(0));
+        subjects3.add(subjectList.get(1));
         subjects3.add(subjectList.get(2));
         subjects3.add(subjectList.get(3));
         subjects3.add(subjectList.get(6));
         subjects3.add(subjectList.get(7));
-        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "짱구", GREEN, subjects1));
-        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "철수", GREEN, subjects2));
-        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "유리", GREEN, subjects3));
+        List<Subject> subjects4 = new ArrayList<>();
+        subjects4.add(subjectList.get(1));
+        subjects4.add(subjectList.get(2));
+        subjects4.add(subjectList.get(3));
+        subjects4.add(subjectList.get(4));
+        subjects4.add(subjectList.get(6));
+        subjects4.add(subjectList.get(7));
+        List<Subject> subjects5 = new ArrayList<>();
+        subjects5.add(subjectList.get(0));
+        subjects5.add(subjectList.get(2));
+        subjects5.add(subjectList.get(3));
+        subjects5.add(subjectList.get(5));
+        subjects5.add(subjectList.get(7));
+        subjects5.add(subjectList.get(8));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "유동현", RED, subjects1));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "원지연", YELLOW, subjects2));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "조경민", RED, subjects3));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "김지수", GREEN, subjects4));
+        students.add(new Student(sequence(INDEX_TYPE_STUDENT), "노주연", YELLOW, subjects5));
 
-        int[] scores = {98, 55, 87};
+        Random random = new Random();
+        int maxScore = 100;
+        int minScore = 40;
+
+        // 각 학생의 과목에 대해 랜덤한 회차에 랜덤한 점수 할당
         for (Student student : students) {
             for (Subject subject : student.getSubjects()) {
-                for (int i = 1; i <= scores.length; i++) {
+                List<Integer> randomRounds = selectRandomRounds(random);
+                for (int round : randomRounds) {
+                    // 40 ~ 100 점 사이의 점수 랜덤
+                    int randomScore = random.nextInt(maxScore - minScore + 1) + minScore;
                     try {
-                        scoreManagement.getScoreList().add(new Score(subject.getSubjectId(), student.getStudentId(), i, scores[i - 1], subject.getSubjectType()));
+                        scoreManagement.getScoreList().add(new Score(subject.getSubjectId(), student.getStudentId(), round, randomScore, subject.getSubjectType()));
                     } catch (Exception e) {
                         System.out.println("\n\n테스트 데이터 삽입 실패\n\n");
                         throw new RuntimeException(e);
@@ -102,5 +128,19 @@ public class MainManagement extends Management {
             }
         }
         studentManagement.setStudentList(students);
+    }
+
+    // 랜덤 회차 선택
+    private List<Integer> selectRandomRounds(Random random) {
+        List<Integer> rounds = new ArrayList<>();
+
+        // 회차를 총 5개 선택할때까지 반복
+        while (rounds.size() < 5) {
+            int round = random.nextInt(10) + 1;
+            if (!rounds.contains(round)) {
+                rounds.add(round);
+            }
+        }
+        return rounds;
     }
 }
