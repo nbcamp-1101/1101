@@ -134,9 +134,6 @@ public class StudentManagement extends Management {
     }
 
     /**
-     *
-     */
-    /**
      * 수강생 정보를 삭제하는 메서드
      * <p>
      *     실제 삭제 동작은 deleteStudentInfo()에 위임
