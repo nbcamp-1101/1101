@@ -123,6 +123,15 @@ public class StudentManagement extends Management {
             System.out.println(student.getStudentId() + "번 : " + student.getStudentName());
         }
     }
+    public String editFeelingColor(){
+        try {
+            return getFeelingColor();
+        }catch (Exception e){
+            e.getMessage();
+            e.getCause();
+            return "상태를 다시 입력해주세요!!!!!!!!";
+        }
+    }
 
     /**
      * 수강생 정보를 삭제하는 메서드
@@ -162,66 +171,68 @@ public class StudentManagement extends Management {
 
     // 수강생 정보 수정
     private void modifyStudentInfo() {
-        sc.nextLine();
-        System.out.println("-----------------------------------------------");
-        System.out.println("1. 수강생 이름 수정");
-        System.out.println("2. 수강생 상태 수정");
-        System.out.println("3. 수강생 이름, 상태 모두 수정");
-        int input = Integer.parseInt(sc.nextLine());
-        System.out.println("-----------------------------------------------");
-        switch (input) {
-            case 1 -> {
-                inquiryAllStudentInfo();
-                System.out.println("수정할 수강생 이름 입력");
-                String studentName = sc.nextLine();
-                for (int i = 0; i < studentList.size(); i++) {
-                    if (studentList.get(i).getStudentName().equals(studentName)) {
-                        System.out.print("새로운 이름을 입력해주세요");
-                        String studentNameModify = sc.nextLine();
-                        studentList.get(i).setStudentName(studentNameModify);
-                        System.out.println(studentList.get(i).getStudentName()+" "+studentList.get(i).getFeelingColor());
-                    }
-                }
-            }
-            case 2 -> {
-                inquiryAllStudentInfo();
-                System.out.println("수정할 수강생 이름 입력");
-                String studentName = sc.nextLine();
-                //inquiryFeelingColorStudentInfo();
-                for(int k=0; k<studentList.size(); k++){
-                    if(studentList.get(k).getStudentName().equals(studentName))
-                    {
-                        System.out.println(studentList.get(k).getFeelingColor());
-                    }
-                }
-                for (int i = 0; i < studentList.size(); i++) {
-                    if (studentList.get(i).getStudentName().equals(studentName)) {
-                        System.out.println("새로운 상태를 입력해주세요");
-                        String studentFeelingModify = sc.nextLine();
-                        studentList.get(i).setFeelingColor(studentFeelingModify);
-                        System.out.println(studentList.get(i).getStudentName()+" "+studentList.get(i).getFeelingColor());
-                    }
-                }
-            }
-            case 3 ->{
-                inquiryAllStudentInfo();
-                System.out.println("수정할 수강생 이름 입력");
-                String studentName = sc.nextLine();
-                for (int i = 0; i < studentList.size(); i++) {
-                    if (studentList.get(i).getStudentName().equals(studentName)) {
-                        System.out.print("새로운 이름을 입력해주세요");
-                        String studentNameModify = sc.nextLine();
-                        studentList.get(i).setStudentName(studentNameModify);
-                        System.out.print("새로운 상태를 입력해주세요");
-                        String studentFeelingModify = sc.nextLine();
-                        studentList.get(i).setFeelingColor(studentFeelingModify);
+        try {
+            sc.nextLine();
+            System.out.println("-----------------------------------------------");
+            System.out.println("1. 수강생 이름 수정");
+            System.out.println("2. 수강생 상태 수정");
+            System.out.println("3. 수강생 이름, 상태 모두 수정");
+            int input = Integer.parseInt(sc.nextLine());
+            System.out.println("-----------------------------------------------");
+            switch (input) {
+                case 1 -> {
+                    inquiryAllStudentInfo();
+                    System.out.println("수정할 수강생 번호 이름 입력");
+                    int studentId = Integer.parseInt(sc.nextLine());
+                    System.out.println("숫자로 다시 입력~!~!~!~!~!");
 
-                        System.out.println(studentList.get(i).getStudentName()+" "+studentList.get(i).getFeelingColor());
+                    for (int i = 0; i < studentList.size(); i++) {
+                        if (studentList.get(i).getStudentId() == studentId) {
+                            System.out.print("새로운 이름을 입력해주세요");
+                            String studentNameModify = sc.nextLine();
+                            studentList.get(i).setStudentName(studentNameModify);
+                            System.out.println(studentList.get(i).getStudentName() + " " + studentList.get(i).getFeelingColor());
+                        }
                     }
                 }
-
+                case 2 -> {
+                    inquiryAllStudentInfo();
+                    System.out.println("수정할 수강생 번호 입력");
+                    int studentId = Integer.parseInt(sc.nextLine());
+                    //inquiryFeelingColorStudentInfo();
+                    for (int k = 0; k < studentList.size(); k++) {
+                        if (studentList.get(k).getStudentId() == studentId) {
+                            System.out.println(studentList.get(k).getFeelingColor());
+                        }
+                    }
+                    for (int i = 0; i < studentList.size(); i++) {
+                        if (studentList.get(i).getStudentId() == studentId) {
+                            System.out.println("새로운 상태를 입력해주세요");
+                            studentList.get(i).setFeelingColor(editFeelingColor());
+                            System.out.println(studentList.get(i).getStudentName() + " " + studentList.get(i).getFeelingColor());
+                        }
+                    }
+                }
+                case 3 -> {
+                    inquiryAllStudentInfo();
+                    System.out.println("수정할 수강생 번호 입력");
+                    int studentId = Integer.parseInt(sc.nextLine());
+                    for (int i = 0; i < studentList.size(); i++) {
+                        if (studentList.get(i).getStudentId() == studentId) {
+                            System.out.print("새로운 이름을 입력해주세요");
+                            String studentNameModify = sc.nextLine();
+                            studentList.get(i).setStudentName(studentNameModify);
+                            System.out.print("새로운 상태를 입력해주세요");
+                            studentList.get(i).setFeelingColor(editFeelingColor());
+                            System.out.println(studentList.get(i).getStudentName() + " " + studentList.get(i).getFeelingColor());
+                        }
+                    }
+                }
+                default -> System.out.println("1~3 중에 숫자를 선택해주세요");
             }
-            default -> System.out.println("1~3 중에 숫자를 선택해주세요");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println("똑바로 입력하시라구요");
         }
     }
 
