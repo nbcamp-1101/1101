@@ -151,12 +151,16 @@ public class StudentManagement extends Management {
             // 수강생 삭제 확인
             System.out.println("수강생 정보를 삭제하시겠습니까? (Y/N)");
             String confirm = sc.next();
+
             if ("Y".equalsIgnoreCase(confirm)) {
                 // 수강생 정보 삭제 처리
                 deleteStudentInfo(studentId, scoreManagement);
                 System.out.println("수강생 정보가 삭제되었습니다.");
-            } else {
+            } else if ("N".equalsIgnoreCase(confirm)) {
                 System.out.println("수강생 정보 삭제를 취소하셨습니다.");
+            } else{
+                System.out.println("잘못된 입력");
+                removeStudentInfo(scoreManagement);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
