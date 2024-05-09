@@ -201,7 +201,6 @@ public class StudentManagement extends Management {
                     inquiryAllStudentInfo();
                     System.out.println("수정할 수강생 번호 이름 입력");
                     int studentId = Integer.parseInt(sc.nextLine());
-                    System.out.println("숫자로 다시 입력~!~!~!~!~!");
 
                     for (int i = 0; i < studentList.size(); i++) {
                         if (studentList.get(i).getStudentId() == studentId) {
