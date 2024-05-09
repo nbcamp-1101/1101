@@ -15,6 +15,8 @@ public class Management {
     public static final String INDEX_TYPE_SUBJECT = "SU";
     public static int scoreIndex;
     public static final String INDEX_TYPE_SCORE = "SC";
+
+    // 상태 관리 필드
     public static final String GREEN = "Green";
     public static final String RED = "Red";
     public static final String YELLOW = "Yellow";
