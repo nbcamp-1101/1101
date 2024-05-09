@@ -158,13 +158,12 @@ public class ScoreManagement extends Management {
             try {
                 System.out.println("\n회차를 입력해주세요.");
                 round = sc.next();
+                isNumber(round);
                 isValid(round, "round");
                 if (takeExam[Integer.parseInt(round) - 1]) {
                     System.out.println("이미 저장된 회차입니다.");
                     break;
                 }
-                isNumber(round);
-                isValid(round, "round");
             }catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
