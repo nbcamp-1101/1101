@@ -72,7 +72,7 @@ public class StudentManagement extends Management {
     }
 
     /**
-     * 수갈생 조회 화면
+     * 수강생 조회 화면
      * <p>
      *     전체 수강생 조회, 단일 수강생 조회, 상태별 수강생 조회, 수강생 관리 화면으로 이동 등의 동작을 선택할 수 있다.
      * </p>
